@@ -1,0 +1,50 @@
+<div class="profile-card">
+    <h3>{{ alter.self.name if alter.self and alter.self.name else 'Unnamed Alter' }}</h3>
+    <p>{{ alter.self.self_perception if alter.self and alter.self.self_perception else 'No description available' }}</p>
+    <p>Age: {{ alter.self.age if alter.self and alter.self.age else 'N/A' }}</p>
+    <p>Gender: {{ alter.self.gender if alter.self and alter.self.gender else 'N/A' }}</p>
+    <p>Pronouns: {{ alter.self.pronouns|join(', ') if alter.self and alter.self.pronouns else 'N/A' }}</p>
+    <p>Orientation: {{ alter.self.orientation if alter.self and alter.self.orientation else 'N/A' }}</p>
+    
+    {% if alter.affective and alter.affective.preferences %}
+    <h4>Preferences:</h4>
+    {% if alter.affective.preferences.mild and alter.affective.preferences.mild.likes %}
+    <h5>Likes:</h5>
+    <ul>
+        {% for like in alter.affective.preferences.mild.likes %}
+        <li>{{ like }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    
+    {% if alter.affective.preferences.intense and alter.affective.preferences.intense.loves %}
+    <h5>Loves:</h5>
+    <ul>
+        {% for love in alter.affective.preferences.intense.loves %}
+        <li>{{ love }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endif %}
+    
+    {% if alter.affective and alter.affective.triggers %}
+    <h4>Triggers:</h4>
+    {% if alter.affective.triggers.positive %}
+    <h5>Positive:</h5>
+    <ul>
+        {% for trigger in alter.affective.triggers.positive %}
+        <li>{{ trigger }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    
+    {% if alter.affective.triggers.negative %}
+    <h5>Negative:</h5>
+    <ul>
+        {% for trigger in alter.affective.triggers.negative %}
+        <li>{{ trigger }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endif %}
+</div>
