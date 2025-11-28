@@ -164,18 +164,33 @@ def get_template_context():
 
 def process_templates():
     """Process templates and generate static HTML files"""
-    # Copy all files from webbuild/template/ to webbuild/dev/phase_0/
+    # Get paths
     template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'webbuild', 'template')
+    template_html_dir = os.path.join(template_dir, 'html')  # The actual directory where HTML files are
     output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'webbuild', 'dev', 'phase_0')
 
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
-    # Copy all files from template dir to output dir
+    # Copy all files from webbuild/template/ to webbuild/dev/phase_0/
+    # First copy the main template directory contents
     if os.path.exists(template_dir):
         for item in os.listdir(template_dir):
             source_path = os.path.join(template_dir, item)
             dest_path = os.path.join(output_dir, item)
+
+            if os.path.isfile(source_path):
+                shutil.copy2(source_path, dest_path)
+            elif os.path.isdir(source_path):
+                if os.path.exists(dest_path):
+                    shutil.rmtree(dest_path)
+                shutil.copytree(source_path, dest_path)
+
+    # Also copy files from the html subdirectory specifically to the root of output directory
+    if os.path.exists(template_html_dir):
+        for item in os.listdir(template_html_dir):
+            source_path = os.path.join(template_html_dir, item)
+            dest_path = os.path.join(output_dir, item)  # Directly to output, not in subdirectory
 
             if os.path.isfile(source_path):
                 shutil.copy2(source_path, dest_path)
