@@ -1,0 +1,16 @@
+Validation Report
+=================
+HTML Validation (footer.html): WARN: Missing standard HTML structure
+HTML Validation (header.html): WARN: Missing standard HTML structure
+HTML Validation (index.html): PASS
+HTML Validation (tab_1.html): PASS
+HTML Validation (tab_2.html): PASS
+HTML Validation (tab_3.html): PASS
+HTML Validation (base.html): PASS
+HTML Validation (headers.html): WARN: Missing standard HTML structure
+HTML Validation (extra.html): WARN: Missing standard HTML structure
+HTML Validation (footers.html): WARN: Missing standard HTML structure
+HTML Validation (card.alter.html): WARN: Missing standard HTML structure
+Total HTML files: INFO: Found 17 HTML files
+CSS Files: INFO: Found CSS files: style.css
+JS Files: INFO: Found JS files: main.js

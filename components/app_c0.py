@@ -5,8 +5,8 @@ from jinja2 import Environment, FileSystemLoader
 import json
 from decorators import pipeline_step
 
-class TemplateProcessor:
-    """Class to process templates and generate static HTML files in phase_0"""
+class HTMLProcessor:
+    """Class to process HTML templates and generate static HTML files in phase_0"""
     
     @staticmethod
     def get_template_context():
@@ -169,7 +169,7 @@ class TemplateProcessor:
     
     @pipeline_step
     def process_phase_0(self):
-        """Process templates and generate static HTML files in phase_0"""
+        """Process HTML templates and generate static HTML files in phase_0"""
         # Get paths
         template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'webbuild', 'template')
         template_html_dir = os.path.join(template_dir, 'html')  # The actual directory where HTML files are
@@ -244,10 +244,10 @@ class TemplateProcessor:
                     print(f"Error processing template {template_file}: {str(e)}")
                     continue
         
-        return f"Processed templates from {html_templates_dir} and updated files in {output_dir}"
+        return f"Processed HTML templates from {html_templates_dir} and updated files in {output_dir}"
 
 
 # For compatibility with existing code
 def process_phase_0():
-    processor = TemplateProcessor()
+    processor = HTMLProcessor()
     return processor.process_phase_0()

@@ -1,0 +1,327 @@
+[
+  {
+    "self": {
+      "name": "Astral",
+      "age": 18,
+      "gender": "Male",
+      "pronouns": ["He", "Him"],
+      "orientation": "Pansexual",
+      "self_perception": "Host + Yuki AI co-host"
+    },
+    "affective": {
+      "preferences": {
+        "mild": {
+          "likes": [
+            "AI development & building sentient systems",
+            "Python (decorators > imports)",
+            "Hardware hacking & USB OTG workflows",
+            "Termux, MicroVMs, automation",
+            "Cyber-security & social engineering",
+            "Spicy chicken",
+            "Hybrid Orchestra",
+            "MMORPGs",
+            "LitRPG / Fantasy / Isekai anime"
+          ],
+          "dislikes": [
+            "Java",
+            "`from * import *`",
+            "Manual steps & pseudo-code",
+            "SD card dependency",
+            "Unsolicited DMs / friend requests",
+            "Scripts that don't resume after interruption"
+          ]
+        },
+        "intense": {
+          "loves": [],
+          "hates": []
+        }
+      },
+      "triggers": {
+        "positive": [],
+        "negative": []
+      },
+      "capacity": {
+        "social": "",
+        "sensory": "",
+        "emotional_load": ""
+      }
+    },
+    "relational": {
+      "boundaries": {
+        "dm_request": "❌",
+        "friend_request": "❌"
+      }
+    },
+    "world": {
+      "affinities": {
+        "toward": {
+          "media": {
+            "anime": [],
+            "movies": [],
+            "games": [
+              "MMORPGs"
+            ],
+            "music": {
+              "artists": [],
+              "songs": [],
+              "genres": []
+            }
+          },
+          "aesthetic": {
+            "colors": [
+              "Shades of Gray"
+            ],
+            "textures": [],
+            "scents": [],
+            "sounds": []
+          },
+          "personal": {
+            "foods": [
+              "Spicy chicken"
+            ],
+            "places": [],
+            "times_of_day": [],
+            "words": []
+          },
+          "people": {
+            "cherished": [],
+            "trusted": [],
+            "tolerated": []
+          }
+        },
+        "away": {
+          "media": {
+            "anime": [],
+            "movies": [],
+            "games": [],
+            "music": {
+              "artists": [],
+              "songs": [],
+              "genres": []
+            }
+          },
+          "aesthetic": {
+            "colors": [],
+            "textures": [],
+            "scents": [],
+            "sounds": []
+          },
+          "personal": {
+            "foods": [],
+            "places": [],
+            "times_of_day": [],
+            "words": []
+          },
+          "people": {
+            "distrusted": [],
+            "feared": [],
+            "rejected": []
+          }
+        }
+      },
+      "gateway": []
+    }
+  },
+  {
+    "self": {
+      "name": "Dexen",
+      "age": null,
+      "gender": "Male",
+      "pronouns": ["He", "Him"],
+      "orientation": "Pansexual",
+      "self_perception": ""
+    },
+    "affective": {
+      "preferences": {
+        "mild": {
+          "likes": [],
+          "dislikes": []
+        },
+        "intense": {
+          "loves": [],
+          "hates": []
+        }
+      },
+      "triggers": {
+        "positive": [],
+        "negative": []
+      },
+      "capacity": {
+        "social": "",
+        "sensory": "",
+        "emotional_load": ""
+      }
+    },
+    "relational": {
+      "boundaries": {
+        "dm_request": "No",
+        "friend_request": "No"
+      }
+    },
+    "world": {
+      "affinities": {
+        "toward": {
+          "media": {
+            "anime": [],
+            "movies": [],
+            "games": [],
+            "music": {
+              "artists": [],
+              "songs": [],
+              "genres": []
+            }
+          },
+          "aesthetic": {
+            "colors": [],
+            "textures": [],
+            "scents": [],
+            "sounds": []
+          },
+          "personal": {
+            "foods": [],
+            "places": [],
+            "times_of_day": [],
+            "words": []
+          },
+          "people": {
+            "cherished": [],
+            "trusted": [],
+            "tolerated": []
+          }
+        },
+        "away": {
+          "media": {
+            "anime": [],
+            "movies": [],
+            "games": [],
+            "music": {
+              "artists": [],
+              "songs": [],
+              "genres": []
+            }
+          },
+          "aesthetic": {
+            "colors": [],
+            "textures": [],
+            "scents": [],
+            "sounds": []
+          },
+          "personal": {
+            "foods": [],
+            "places": [],
+            "times_of_day": [],
+            "words": []
+          },
+          "people": {
+            "distrusted": [],
+            "feared": [],
+            "rejected": []
+          }
+        }
+      },
+      "gateway": []
+    }
+  },
+  {
+    "self": {
+      "name": "Seles",
+      "age": 16,
+      "gender": "Female",
+      "pronouns": ["She", "Her"],
+      "orientation": "",
+      "self_perception": ""
+    },
+    "affective": {
+      "preferences": {
+        "mild": {
+          "likes": [],
+          "dislikes": []
+        },
+        "intense": {
+          "loves": [],
+          "hates": []
+        }
+      },
+      "triggers": {
+        "positive": [],
+        "negative": []
+      },
+      "capacity": {
+        "social": "",
+        "sensory": "",
+        "emotional_load": ""
+      }
+    },
+    "relational": {
+      "boundaries": {
+        "dm_request": "",
+        "friend_request": ""
+      }
+    },
+    "world": {
+      "affinities": {
+        "toward": {
+          "media": {
+            "anime": [],
+            "movies": [],
+            "games": [],
+            "music": {
+              "artists": [],
+              "songs": [],
+              "genres": []
+            }
+          },
+          "aesthetic": {
+            "colors": [
+              "Light Gray"
+            ],
+            "textures": [],
+            "scents": [],
+            "sounds": []
+          },
+          "personal": {
+            "foods": [],
+            "places": [],
+            "times_of_day": [],
+            "words": []
+          },
+          "people": {
+            "cherished": [],
+            "trusted": [],
+            "tolerated": []
+          }
+        },
+        "away": {
+          "media": {
+            "anime": [],
+            "movies": [],
+            "games": [],
+            "music": {
+              "artists": [],
+              "songs": [],
+              "genres": []
+            }
+          },
+          "aesthetic": {
+            "colors": [],
+            "textures": [],
+            "scents": [],
+            "sounds": []
+          },
+          "personal": {
+            "foods": [],
+            "places": [],
+            "times_of_day": [],
+            "words": []
+          },
+          "people": {
+            "distrusted": [],
+            "feared": [],
+            "rejected": []
+          }
+        }
+      },
+      "gateway": []
+    }
+  }
+]

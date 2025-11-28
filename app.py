@@ -10,42 +10,42 @@ class Pipeline:
 
     @pipeline_step
     def run_pipeline(self):
-        """Run the entire pipeline from phase 0 through phase 5, then to production"""
-        # Import and run app_c0 to process templates into phase_0
+        """Run the entire pipeline from HTML processing through to production"""
+        # Phase 0: HTML processing
         from components.app_c0 import process_phase_0
         result_0 = process_phase_0()
 
-        # Import and run app_c1 to copy from phase_0 to phase_1
+        # Phase 1: JavaScript enhancement
         from components.app_c1 import copy_to_phase_1
         result_1 = copy_to_phase_1()
 
-        # Import and run app_c2 to copy from phase_1 to phase_2
+        # Phase 2: CSS styling enhancement
         from components.app_c2 import copy_to_phase_2
         result_2 = copy_to_phase_2()
 
-        # Import and run app_c3 to copy from phase_2 to phase_3
+        # Phase 3: Alter data injection
         from components.app_c3 import copy_to_phase_3
         result_3 = copy_to_phase_3()
 
-        # Import and run app_c4 to copy from phase_3 to phase_4
+        # Phase 4: Validation
         from components.app_c4 import copy_to_phase_4
         result_4 = copy_to_phase_4()
 
-        # Import and run app_c5 to copy from phase_4 to phase_5
+        # Phase 5: Minification
         from components.app_c5 import copy_to_phase_5
         result_5 = copy_to_phase_5()
 
-        # Import and run app_c6 to copy from phase_5 to production
+        # Production: Deploy to production
         from components.app_c6 import copy_to_production
         result_prod = copy_to_production()
 
         return {
-            Phase.PHASE_0: result_0,
-            Phase.PHASE_1: result_1,
-            Phase.PHASE_2: result_2,
-            Phase.PHASE_3: result_3,
-            Phase.PHASE_4: result_4,
-            Phase.PHASE_5: result_5,
+            Phase.HTML: result_0,
+            Phase.JAVASCRIPT: result_1,
+            Phase.CSS: result_2,
+            Phase.ALTER_DATA: result_3,
+            Phase.VALIDATION: result_4,
+            Phase.MINIFICATION: result_5,
             Phase.PRODUCTION: result_prod
         }
 
