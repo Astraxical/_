@@ -1,0 +1,100 @@
+{
+  "self": {
+    "name": "",
+    "age": null,
+    "gender": "",
+    "pronouns": [],
+    "orientation": "",
+    "self_perception": ""
+  },
+  "affective": {
+    "preferences": {
+      "mild": {
+        "likes": [],
+        "dislikes": []
+      },
+      "intense": {
+        "loves": [],
+        "hates": []
+      }
+    },
+    "triggers": {
+      "positive": [],
+      "negative": []
+    },
+    "capacity": {
+      "social": "",
+      "sensory": "",
+      "emotional_load": ""
+    }
+  },
+  "relational": {
+    "boundaries": {
+      "dm_request": "",
+      "friend_request": ""
+    }
+  },
+  "world": {
+    "affinities": {
+      "toward": {
+        "media": {
+          "anime": [],
+          "movies": [],
+          "games": [],
+          "music": {
+            "artists": [],
+            "songs": [],
+            "genres": []
+          }
+        },
+        "aesthetic": {
+          "colors": [],
+          "textures": [],
+          "scents": [],
+          "sounds": []
+        },
+        "personal": {
+          "foods": [],
+          "places": [],
+          "times_of_day": [],
+          "words": []
+        },
+        "people": {
+          "cherished": [],
+          "trusted": [],
+          "tolerated": []
+        }
+      },
+      "away": {
+        "media": {
+          "anime": [],
+          "movies": [],
+          "games": [],
+          "music": {
+            "artists": [],
+            "songs": [],
+            "genres": []
+          }
+        },
+        "aesthetic": {
+          "colors": [],
+          "textures": [],
+          "scents": [],
+          "sounds": []
+        },
+        "personal": {
+          "foods": [],
+          "places": [],
+          "times_of_day": [],
+          "words": []
+        },
+        "people": {
+          "distrusted": [],
+          "feared": [],
+          "rejected": []
+        }
+      }
+    },
+    "gateway": []
+  }
+}
