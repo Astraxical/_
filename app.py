@@ -66,14 +66,22 @@ def create_app():
         name = flask.request.args.get('name')
 
         if phase == '0' and type_ and name:
+            # Build the file extension based on the type
+            if type_ == 'css':
+                extension = 'css'
+            elif type_ == 'js':
+                extension = 'js'
+            else:
+                extension = 'html'  # default for html and other types
+
             # Build path to requested asset in webbuild/dev/phase_0/
-            asset_path = os.path.join('webbuild', 'dev', f'phase_{phase}', type_, f'{name}.html')
+            asset_path = os.path.join('webbuild', 'dev', f'phase_{phase}', type_, f'{name}.{extension}')
 
             # Check if the file exists
-            abs_asset_path = os.path.join(app.root_path, 'webbuild', 'dev', f'phase_{phase}', type_, f'{name}.html')
+            abs_asset_path = os.path.join(app.root_path, 'webbuild', 'dev', f'phase_{phase}', type_, f'{name}.{extension}')
             if os.path.exists(abs_asset_path):
                 # Serve the specific file
-                return send_from_directory(f'webbuild/dev/phase_{phase}/{type_}', f'{name}.html')
+                return send_from_directory(f'webbuild/dev/phase_{phase}/{type_}', f'{name}.{extension}')
             else:
                 abort(404)
         else:
