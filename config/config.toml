@@ -1,0 +1,12 @@
+[flask]
+debug = true
+host = "0.0.0.0"
+port = 5000
+secret_key = "your-secret-key-here"
+
+[database]
+path = "database/bio.db"
+
+[app]
+name = "Alters Introduction"
+version = "1.0.0"
