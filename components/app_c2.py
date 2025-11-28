@@ -51,6 +51,7 @@ class CSSStyler:
     margin: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 300px;
 }
 
 .alter-card:hover {
@@ -83,14 +84,34 @@ class CSSStyler:
     margin-bottom: 1.5rem;
 }
 
+/* Individual alter card styling */
+.astral-card {
+    border-left: 5px solid #808080; /* Gray for Astral's "Shades of Gray" */
+    background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+}
+
+.dexen-card {
+    border-left: 5px solid #000080; /* Blue for Dexen */
+    background: linear-gradient(to bottom, #e6f0ff, #ffffff);
+}
+
+.seles-card {
+    border-left: 5px solid #d3d3d3; /* Light gray for Seles */
+    background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+}
+
 /* Additional responsive design */
 @media (max-width: 768px) {
     .alters-grid {
         grid-template-columns: 1fr;
     }
+
+    .alter-card {
+        min-height: auto;
+    }
 }
 """
-        
+
         # Combine the original content with the enhanced styling
         return original_content + "\n" + additional_css
 

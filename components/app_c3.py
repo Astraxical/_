@@ -66,21 +66,42 @@ class AlterDataInjector:
     def _generate_alter_cards(self, alters_data):
         """Generate HTML for alter cards"""
         cards_html = '<div class="alters-grid">'
-        
-        for alter in alters_data:
+
+        for i, alter in enumerate(alters_data):
             name = alter.get('self', {}).get('name', 'Unknown')
             age = alter.get('self', {}).get('age', 'N/A')
             gender = alter.get('self', {}).get('gender', 'N/A')
             pronouns = ', '.join(alter.get('self', {}).get('pronouns', []))
             orientation = alter.get('self', {}).get('orientation', 'N/A')
             self_perception = alter.get('self', {}).get('self_perception', 'N/A')
-            
+
             likes = alter.get('affective', {}).get('preferences', {}).get('mild', {}).get('likes', [])
             dislikes = alter.get('affective', {}).get('preferences', {}).get('mild', {}).get('dislikes', [])
+            loves = alter.get('affective', {}).get('preferences', {}).get('intense', {}).get('loves', [])
+            hates = alter.get('affective', {}).get('preferences', {}).get('intense', {}).get('hates', [])
+            positive_triggers = alter.get('affective', {}).get('triggers', {}).get('positive', [])
+            negative_triggers = alter.get('affective', {}).get('triggers', {}).get('negative', [])
             colors = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('aesthetic', {}).get('colors', [])
-            
+            textures = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('aesthetic', {}).get('textures', [])
+            scents = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('aesthetic', {}).get('scents', [])
+            sounds = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('aesthetic', {}).get('sounds', [])
+            foods = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('personal', {}).get('foods', [])
+            places = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('personal', {}).get('places', [])
+            times_of_day = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('personal', {}).get('times_of_day', [])
+            words = alter.get('world', {}).get('affinities', {}).get('toward', {}).get('personal', {}).get('words', [])
+
+            # Create a unique class name based on the alter's name for custom styling
+            safe_name = name.replace(' ', '-').replace("'", '').lower()
+            card_class = f"alter-card {safe_name}-card"
+
+            # Determine card style based on attributes
+            card_style = ""
+            if colors:
+                primary_color = colors[0] if colors else "white"
+                card_style = f'style="border-left: 5px solid {primary_color};"'
+
             card_html = f'''
-            <div class="alter-card">
+            <div class="{card_class}" {card_style}>
                 <h3>{name}</h3>
                 <p><strong>Age:</strong> {age if age else "N/A"}</p>
                 <p><strong>Gender:</strong> {gender}</p>
@@ -88,22 +109,65 @@ class AlterDataInjector:
                 <p><strong>Orientation:</strong> {orientation}</p>
                 <p><strong>Self Perception:</strong> {self_perception}</p>
             '''
-            
+
             if likes:
                 card_html += f'<p><strong>Likes:</strong> {", ".join(likes)}</p>'
-            
+
+            if loves:
+                card_html += f'<p><strong>Loves:</strong> {", ".join(loves)}</p>'
+
             if dislikes:
                 card_html += f'<p><strong>Dislikes:</strong> {", ".join(dislikes)}</p>'
-            
+
+            if hates:
+                card_html += f'<p><strong>Hates:</strong> {", ".join(hates)}</p>'
+
+            if positive_triggers:
+                card_html += f'<p><strong>Positive Triggers:</strong> {", ".join(positive_triggers)}</p>'
+
+            if negative_triggers:
+                card_html += f'<p><strong>Negative Triggers:</strong> {", ".join(negative_triggers)}</p>'
+
             if colors:
                 card_html += f'<p><strong>Favorite Colors:</strong> {", ".join(colors)}</p>'
-            
+
+            if textures:
+                card_html += f'<p><strong>Favorite Textures:</strong> {", ".join(textures)}</p>'
+
+            if scents:
+                card_html += f'<p><strong>Favorite Scents:</strong> {", ".join(scents)}</p>'
+
+            if sounds:
+                card_html += f'<p><strong>Favorite Sounds:</strong> {", ".join(sounds)}</p>'
+
+            if foods:
+                card_html += f'<p><strong>Favorite Foods:</strong> {", ".join(foods)}</p>'
+
+            if places:
+                card_html += f'<p><strong>Favorite Places:</strong> {", ".join(places)}</p>'
+
+            if times_of_day:
+                card_html += f'<p><strong>Favorite Times:</strong> {", ".join(times_of_day)}</p>'
+
+            if words:
+                card_html += f'<p><strong>Favorite Words:</strong> {", ".join(words)}</p>'
+
+            # Add boundary information
+            dm_request = alter.get('relational', {}).get('boundaries', {}).get('dm_request', 'N/A')
+            friend_request = alter.get('relational', {}).get('boundaries', {}).get('friend_request', 'N/A')
+
+            if dm_request != 'N/A':
+                card_html += f'<p><strong>DMs:</strong> {dm_request}</p>'
+
+            if friend_request != 'N/A':
+                card_html += f'<p><strong>Friend Requests:</strong> {friend_request}</p>'
+
             card_html += '</div>'
-            
+
             cards_html += card_html
-        
+
         cards_html += '</div>'
-        
+
         return cards_html
 
 
