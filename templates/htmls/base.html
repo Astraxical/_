@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me and My Alters</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to My World</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#alter1">Alter 1</a></li>
+                <li><a href="#alter2">Alter 2</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>About the Host</h2>
+            <div class="profile-card">
+                <h3>{{ main_person.name }}</h3>
+                <p>{{ main_person.description }}</p>
+                <p>Age: {{ main_person.age if main_person.age else 'N/A' }}</p>
+                <p>Gender: {{ main_person.gender if main_person.gender else 'N/A' }}</p>
+                <p>Pronouns: {{ main_person.pronouns|join(', ') if main_person.pronouns and main_person.pronouns is iterable else main_person.pronouns or 'N/A' }}</p>
+                <p>Orientation: {{ main_person.orientation if main_person.orientation else 'N/A' }}</p>
+                <p>Self Perception: {{ main_person.self_perception if main_person.self_perception else 'N/A' }}</p>
+                <h4>Interests:</h4>
+                <ul>
+                    {% for interest in main_person.interests %}
+                    <li>{{ interest }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <section id="alter1">
+            <h2>Meet {{ alter1.self.name if alter1.self and alter1.self.name else 'Alter 1' }}</h2>
+            <div class="profile-card">
+                <h3>{{ alter1.self.name if alter1.self and alter1.self.name else 'Alter 1' }}</h3>
+                <p>{{ alter1.self.self_perception if alter1.self and alter1.self.self_perception else 'No description available' }}</p>
+                <p>Age: {{ alter1.self.age if alter1.self and alter1.self.age else 'N/A' }}</p>
+                <p>Gender: {{ alter1.self.gender if alter1.self and alter1.self.gender else 'N/A' }}</p>
+                <p>Pronouns: {{ alter1.self.pronouns|join(', ') if alter1.self and alter1.self.pronouns else 'N/A' }}</p>
+                <p>Orientation: {{ alter1.self.orientation if alter1.self and alter1.self.orientation else 'N/A' }}</p>
+                <p>Self Perception: {{ alter1.self.self_perception if alter1.self and alter1.self.self_perception else 'N/A' }}</p>
+
+                <h4>Preferences:</h4>
+                <h5>Likes:</h5>
+                <ul>
+                    {% for like in alter1.affective.preferences.mild.likes if alter1.affective and alter1.affective.preferences and alter1.affective.preferences.mild and alter1.affective.preferences.mild.likes %}
+                    <li>{{ like }}</li>
+                    {% endfor %}
+                </ul>
+                <h5>Loves:</h5>
+                <ul>
+                    {% for love in alter1.affective.preferences.intense.loves if alter1.affective and alter1.affective.preferences and alter1.affective.preferences.intense and alter1.affective.preferences.intense.loves %}
+                    <li>{{ love }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Triggers:</h4>
+                <h5>Positive:</h5>
+                <ul>
+                    {% for trigger in alter1.affective.triggers.positive if alter1.affective and alter1.affective.triggers and alter1.affective.triggers.positive %}
+                    <li>{{ trigger }}</li>
+                    {% endfor %}
+                </ul>
+                <h5>Negative:</h5>
+                <ul>
+                    {% for trigger in alter1.affective.triggers.negative if alter1.affective and alter1.affective.triggers and alter1.affective.triggers.negative %}
+                    <li>{{ trigger }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Capacity:</h4>
+                <p><strong>Social:</strong> {{ alter1.affective.capacity.social if alter1.affective and alter1.affective.capacity and alter1.affective.capacity.social else 'N/A' }}</p>
+                <p><strong>Sensory:</strong> {{ alter1.affective.capacity.sensory if alter1.affective and alter1.affective.capacity and alter1.affective.capacity.sensory else 'N/A' }}</p>
+                <p><strong>Emotional Load:</strong> {{ alter1.affective.capacity.emotional_load if alter1.affective and alter1.affective.capacity and alter1.affective.capacity.emotional_load else 'N/A' }}</p>
+
+                <h4>Boundaries:</h4>
+                <p><strong>DM Request:</strong> {{ alter1.relational.boundaries.dm_request if alter1.relational and alter1.relational.boundaries and alter1.relational.boundaries.dm_request else 'N/A' }}</p>
+                <p><strong>Friend Request:</strong> {{ alter1.relational.boundaries.friend_request if alter1.relational and alter1.relational.boundaries and alter1.relational.boundaries.friend_request else 'N/A' }}</p>
+
+                <h4>Media Affinities:</h4>
+                <h5>Towards - Anime:</h5>
+                <ul>
+                    {% for anime in alter1.world.affinities.toward.media.anime if alter1.world and alter1.world.affinities and alter1.world.affinities.toward and alter1.world.affinities.toward.media and alter1.world.affinities.toward.media.anime %}
+                    <li>{{ anime }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Towards - Music Artists:</h5>
+                <ul>
+                    {% for artist in alter1.world.affinities.toward.media.music.artists if alter1.world and alter1.world.affinities and alter1.world.affinities.toward and alter1.world.affinities.toward.media and alter1.world.affinities.toward.media.music and alter1.world.affinities.toward.media.music.artists %}
+                    <li>{{ artist }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Aesthetic Preferences:</h4>
+                <h5>Colors:</h5>
+                <ul>
+                    {% for color in alter1.world.affinities.toward.aesthetic.colors if alter1.world and alter1.world.affinities and alter1.world.affinities.toward and alter1.world.affinities.toward.aesthetic and alter1.world.affinities.toward.aesthetic.colors %}
+                    <li>{{ color }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Gateway:</h4>
+                <ul>
+                    {% for gateway in alter1.world.gateway if alter1.world and alter1.world.gateway %}
+                    <li>{{ gateway }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <section id="alter2">
+            <h2>Meet {{ alter2.self.name if alter2.self and alter2.self.name else 'Alter 2' }}</h2>
+            <div class="profile-card">
+                <h3>{{ alter2.self.name if alter2.self and alter2.self.name else 'Alter 2' }}</h3>
+                <p>{{ alter2.self.self_perception if alter2.self and alter2.self.self_perception else 'No description available' }}</p>
+                <p>Age: {{ alter2.self.age if alter2.self and alter2.self.age else 'N/A' }}</p>
+                <p>Gender: {{ alter2.self.gender if alter2.self and alter2.self.gender else 'N/A' }}</p>
+                <p>Pronouns: {{ alter2.self.pronouns|join(', ') if alter2.self and alter2.self.pronouns else 'N/A' }}</p>
+                <p>Orientation: {{ alter2.self.orientation if alter2.self and alter2.self.orientation else 'N/A' }}</p>
+                <p>Self Perception: {{ alter2.self.self_perception if alter2.self and alter2.self.self_perception else 'N/A' }}</p>
+
+                <h4>Preferences:</h4>
+                <h5>Likes:</h5>
+                <ul>
+                    {% for like in alter2.affective.preferences.mild.likes if alter2.affective and alter2.affective.preferences and alter2.affective.preferences.mild and alter2.affective.preferences.mild.likes %}
+                    <li>{{ like }}</li>
+                    {% endfor %}
+                </ul>
+                <h5>Loves:</h5>
+                <ul>
+                    {% for love in alter2.affective.preferences.intense.loves if alter2.affective and alter2.affective.preferences and alter2.affective.preferences.intense and alter2.affective.preferences.intense.loves %}
+                    <li>{{ love }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Triggers:</h4>
+                <h5>Positive:</h5>
+                <ul>
+                    {% for trigger in alter2.affective.triggers.positive if alter2.affective and alter2.affective.triggers and alter2.affective.triggers.positive %}
+                    <li>{{ trigger }}</li>
+                    {% endfor %}
+                </ul>
+                <h5>Negative:</h5>
+                <ul>
+                    {% for trigger in alter2.affective.triggers.negative if alter2.affective and alter2.affective.triggers and alter2.affective.triggers.negative %}
+                    <li>{{ trigger }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Capacity:</h4>
+                <p><strong>Social:</strong> {{ alter2.affective.capacity.social if alter2.affective and alter2.affective.capacity and alter2.affective.capacity.social else 'N/A' }}</p>
+                <p><strong>Sensory:</strong> {{ alter2.affective.capacity.sensory if alter2.affective and alter2.affective.capacity and alter2.affective.capacity.sensory else 'N/A' }}</p>
+                <p><strong>Emotional Load:</strong> {{ alter2.affective.capacity.emotional_load if alter2.affective and alter2.affective.capacity and alter2.affective.capacity.emotional_load else 'N/A' }}</p>
+
+                <h4>Boundaries:</h4>
+                <p><strong>DM Request:</strong> {{ alter2.relational.boundaries.dm_request if alter2.relational and alter2.relational.boundaries and alter2.relational.boundaries.dm_request else 'N/A' }}</p>
+                <p><strong>Friend Request:</strong> {{ alter2.relational.boundaries.friend_request if alter2.relational and alter2.relational.boundaries and alter2.relational.boundaries.friend_request else 'N/A' }}</p>
+
+                <h4>Media Affinities:</h4>
+                <h5>Towards - Anime:</h5>
+                <ul>
+                    {% for anime in alter2.world.affinities.toward.media.anime if alter2.world and alter2.world.affinities and alter2.world.affinities.toward and alter2.world.affinities.toward.media and alter2.world.affinities.toward.media.anime %}
+                    <li>{{ anime }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Towards - Music Artists:</h5>
+                <ul>
+                    {% for artist in alter2.world.affinities.toward.media.music.artists if alter2.world and alter2.world.affinities and alter2.world.affinities.toward and alter2.world.affinities.toward.media and alter2.world.affinities.toward.media.music and alter2.world.affinities.toward.media.music.artists %}
+                    <li>{{ artist }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Aesthetic Preferences:</h4>
+                <h5>Colors:</h5>
+                <ul>
+                    {% for color in alter2.world.affinities.toward.aesthetic.colors if alter2.world and alter2.world.affinities and alter2.world.affinities.toward and alter2.world.affinities.toward.aesthetic and alter2.world.affinities.toward.aesthetic.colors %}
+                    <li>{{ color }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Gateway:</h4>
+                <ul>
+                    {% for gateway in alter2.world.gateway if alter2.world and alter2.world.gateway %}
+                    <li>{{ gateway }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 My System. All rights reserved.</p>
+    </footer>
+</body>
+</html>
