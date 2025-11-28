@@ -7,3 +7,4 @@ class Phase(Enum):
     PHASE_3 = 3
     PHASE_4 = 4
     PHASE_5 = 5
+    PRODUCTION = 6

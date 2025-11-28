@@ -7,41 +7,46 @@ from phase_enum import Phase
 
 class Pipeline:
     """Main pipeline class to process all phases"""
-    
+
     @pipeline_step
     def run_pipeline(self):
-        """Run the entire pipeline from phase 0 through phase 5"""
+        """Run the entire pipeline from phase 0 through phase 5, then to production"""
         # Import and run app_c0 to process templates into phase_0
         from components.app_c0 import process_phase_0
         result_0 = process_phase_0()
-        
+
         # Import and run app_c1 to copy from phase_0 to phase_1
         from components.app_c1 import copy_to_phase_1
         result_1 = copy_to_phase_1()
-        
+
         # Import and run app_c2 to copy from phase_1 to phase_2
         from components.app_c2 import copy_to_phase_2
         result_2 = copy_to_phase_2()
-        
+
         # Import and run app_c3 to copy from phase_2 to phase_3
         from components.app_c3 import copy_to_phase_3
         result_3 = copy_to_phase_3()
-        
+
         # Import and run app_c4 to copy from phase_3 to phase_4
         from components.app_c4 import copy_to_phase_4
         result_4 = copy_to_phase_4()
-        
+
         # Import and run app_c5 to copy from phase_4 to phase_5
         from components.app_c5 import copy_to_phase_5
         result_5 = copy_to_phase_5()
-        
+
+        # Import and run app_c6 to copy from phase_5 to production
+        from components.app_c6 import copy_to_production
+        result_prod = copy_to_production()
+
         return {
             Phase.PHASE_0: result_0,
             Phase.PHASE_1: result_1,
             Phase.PHASE_2: result_2,
             Phase.PHASE_3: result_3,
             Phase.PHASE_4: result_4,
-            Phase.PHASE_5: result_5
+            Phase.PHASE_5: result_5,
+            Phase.PRODUCTION: result_prod
         }
 
 
@@ -90,7 +95,7 @@ def create_app():
         """
         import flask
         phase = flask.request.args.get('phase')
-        
+
         if phase == '0':
             # Serve index.html from webbuild/dev/phase_0/
             index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_0', 'index.html')
@@ -133,6 +138,13 @@ def create_app():
                 return send_from_directory('webbuild/dev/phase_5', 'index.html')
             else:
                 return "No index.html file found in webbuild/dev/phase_5/"
+        elif phase == 'production':
+            # Serve index.html from webbuild/production/
+            index_path = os.path.join(app.root_path, 'webbuild', 'production', 'index.html')
+            if os.path.exists(index_path):
+                return send_from_directory('webbuild/production', 'index.html')
+            else:
+                return "No index.html file found in webbuild/production/"
         else:
             return f"Phase {phase} not found"
 
@@ -145,8 +157,8 @@ def create_app():
         phase = flask.request.args.get('phase')
         type_ = flask.request.args.get('type')
         name = flask.request.args.get('name')
-        
-        if phase in ['0', '1', '2', '3', '4', '5'] and type_ and name:
+
+        if phase in ['0', '1', '2', '3', '4', '5', 'production'] and type_ and name:
             # Build the file extension based on the type
             if type_ == 'css':
                 extension = 'css'
@@ -154,14 +166,23 @@ def create_app():
                 extension = 'js'
             else:
                 extension = 'html'  # default for html and other types
-            
+
             # Build path to requested asset in the appropriate phase directory
-            abs_asset_path = os.path.join(app.root_path, 'webbuild', 'dev', f'phase_{phase}', type_, f'{name}.{extension}')
-            if os.path.exists(abs_asset_path):
-                # Serve the specific file from the appropriate phase
-                return send_from_directory(f'webbuild/dev/phase_{phase}/{type_}', f'{name}.{extension}')
+            if phase == 'production':
+                abs_asset_path = os.path.join(app.root_path, 'webbuild', 'production', type_, f'{name}.{extension}')
+                if os.path.exists(abs_asset_path):
+                    # Serve the specific file from production
+                    return send_from_directory(f'webbuild/production/{type_}', f'{name}.{extension}')
+                else:
+                    abort(404)
             else:
-                abort(404)
+                # For regular dev phases
+                abs_asset_path = os.path.join(app.root_path, 'webbuild', 'dev', f'phase_{phase}', type_, f'{name}.{extension}')
+                if os.path.exists(abs_asset_path):
+                    # Serve the specific file from the appropriate phase
+                    return send_from_directory(f'webbuild/dev/phase_{phase}/{type_}', f'{name}.{extension}')
+                else:
+                    abort(404)
         else:
             return "Missing required parameters: phase, type, name"
 
@@ -169,26 +190,34 @@ def create_app():
     @app.route('/dev/phase0')
     def dev_phase_0():
         return send_from_directory('webbuild/dev/phase_0', 'index.html')
-        
+
     @app.route('/dev/phase1')
     def dev_phase_1():
         return send_from_directory('webbuild/dev/phase_1', 'index.html')
-        
+
     @app.route('/dev/phase2')
     def dev_phase_2():
         return send_from_directory('webbuild/dev/phase_2', 'index.html')
-        
+
     @app.route('/dev/phase3')
     def dev_phase_3():
         return send_from_directory('webbuild/dev/phase_3', 'index.html')
-        
+
     @app.route('/dev/phase4')
     def dev_phase_4():
         return send_from_directory('webbuild/dev/phase_4', 'index.html')
-        
+
     @app.route('/dev/phase5')
     def dev_phase_5():
         return send_from_directory('webbuild/dev/phase_5', 'index.html')
+
+    @app.route('/dev/production')
+    def dev_production():
+        return send_from_directory('webbuild/production', 'index.html')
+
+    @app.route('/production')
+    def production():
+        return send_from_directory('webbuild/production', 'index.html')
     
     return app
 
