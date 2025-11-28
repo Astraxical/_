@@ -2,7 +2,6 @@ import os
 import sys
 from flask import Flask, send_from_directory, abort
 import toml
-from components.app_c0 import process_templates
 
 def create_app():
     app = Flask(__name__,
@@ -31,8 +30,31 @@ def create_app():
     @app.route('/process')
     def process():
         try:
-            result = process_templates()
-            return f"Template processing completed: {result}"
+            # Import and run app_c0 to process templates into phase_0
+            from components.app_c0 import process_phase_0
+            result_0 = process_phase_0()
+
+            # Import and run app_c1 to copy from phase_0 to phase_1
+            from components.app_c1 import copy_to_phase_1
+            result_1 = copy_to_phase_1()
+
+            # Import and run app_c2 to copy from phase_1 to phase_2
+            from components.app_c2 import copy_to_phase_2
+            result_2 = copy_to_phase_2()
+
+            # Import and run app_c3 to copy from phase_2 to phase_3
+            from components.app_c3 import copy_to_phase_3
+            result_3 = copy_to_phase_3()
+
+            # Import and run app_c4 to copy from phase_3 to phase_4
+            from components.app_c4 import copy_to_phase_4
+            result_4 = copy_to_phase_4()
+
+            # Import and run app_c5 to copy from phase_4 to phase_5
+            from components.app_c5 import copy_to_phase_5
+            result_5 = copy_to_phase_5()
+
+            return f"Pipeline processing completed:\n{result_0}\n{result_1}\n{result_2}\n{result_3}\n{result_4}\n{result_5}"
         except Exception as e:
             return f"Error processing templates: {str(e)}"
 
@@ -93,8 +115,32 @@ def create_app():
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'process':
         # Process templates when called with 'process' argument
-        result = process_templates()
-        print(f"Template processing completed: {result}")
+        # This runs the entire pipeline
+        from components.app_c0 import process_phase_0
+        result_0 = process_phase_0()
+
+        from components.app_c1 import copy_to_phase_1
+        result_1 = copy_to_phase_1()
+
+        from components.app_c2 import copy_to_phase_2
+        result_2 = copy_to_phase_2()
+
+        from components.app_c3 import copy_to_phase_3
+        result_3 = copy_to_phase_3()
+
+        from components.app_c4 import copy_to_phase_4
+        result_4 = copy_to_phase_4()
+
+        from components.app_c5 import copy_to_phase_5
+        result_5 = copy_to_phase_5()
+
+        print(f"Pipeline processing completed:")
+        print(result_0)
+        print(result_1)
+        print(result_2)
+        print(result_3)
+        print(result_4)
+        print(result_5)
     else:
         # Run as web server
         app = create_app()

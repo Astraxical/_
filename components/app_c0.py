@@ -162,57 +162,61 @@ def get_template_context():
     }
     return sample_data
 
-def process_templates():
-    """Process templates and generate static HTML files"""
+def process_phase_0():
+    """Process templates and generate static HTML files in phase_0"""
     # Get paths
     template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'webbuild', 'template')
     template_html_dir = os.path.join(template_dir, 'html')  # The actual directory where HTML files are
     output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'webbuild', 'dev', 'phase_0')
-
+    
+    # Delete old files in output directory before processing
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
+    
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
-
+    
     # Copy all files from webbuild/template/ to webbuild/dev/phase_0/
     # First copy the main template directory contents
     if os.path.exists(template_dir):
         for item in os.listdir(template_dir):
             source_path = os.path.join(template_dir, item)
             dest_path = os.path.join(output_dir, item)
-
+            
             if os.path.isfile(source_path):
                 shutil.copy2(source_path, dest_path)
             elif os.path.isdir(source_path):
                 if os.path.exists(dest_path):
                     shutil.rmtree(dest_path)
                 shutil.copytree(source_path, dest_path)
-
+    
     # Also copy files from the html subdirectory specifically to the root of output directory
     if os.path.exists(template_html_dir):
         for item in os.listdir(template_html_dir):
             source_path = os.path.join(template_html_dir, item)
             dest_path = os.path.join(output_dir, item)  # Directly to output, not in subdirectory
-
+            
             if os.path.isfile(source_path):
                 shutil.copy2(source_path, dest_path)
             elif os.path.isdir(source_path):
                 if os.path.exists(dest_path):
                     shutil.rmtree(dest_path)
                 shutil.copytree(source_path, dest_path)
-
+    
     # Process template files from templates/web/htmls/ and integrate into copied files
     html_templates_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates', 'web', 'htmls')
-
+    
     # Create Flask app to use its template engine
     app = Flask(__name__,
                 template_folder=html_templates_dir,
                 static_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static'))
-
+    
     # Configure the app to avoid URL building issues
     app.config['SERVER_NAME'] = 'localhost'
-
+    
     # Get sample context
     context = get_template_context()
-
+    
     # Process each template file
     for template_file in os.listdir(html_templates_dir):
         if template_file.endswith('.html'):
@@ -223,21 +227,15 @@ def process_templates():
                     full_context = context.copy()
                     full_context['alter'] = context.get('alter1', {})
                     rendered_content = app.jinja_env.get_template(template_file).render(**full_context)
-
+                
                 # Write the processed content to the output directory
                 output_file_path = os.path.join(output_dir, template_file)
-
+                
                 with open(output_file_path, 'w', encoding='utf-8') as f:
                     f.write(rendered_content)
-
+                    
             except Exception as e:
                 print(f"Error processing template {template_file}: {str(e)}")
                 continue
-
+    
     return f"Processed templates from {html_templates_dir} and updated files in {output_dir}"
-
-# For commandline execution
-if __name__ == '__main__':
-    print("Processing templates...")
-    result = process_templates()
-    print(result)
