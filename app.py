@@ -68,12 +68,46 @@ def create_app():
 
         if phase == '0':
             # Serve index.html from webbuild/dev/phase_0/
-            phase_0_dir = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_0')
-            index_path = os.path.join(phase_0_dir, 'index.html')
+            index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_0', 'index.html')
             if os.path.exists(index_path):
                 return send_from_directory('webbuild/dev/phase_0', 'index.html')
             else:
                 return "No index.html file found in webbuild/dev/phase_0/"
+        elif phase == '1':
+            # Serve index.html from webbuild/dev/phase_1/
+            index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_1', 'index.html')
+            if os.path.exists(index_path):
+                return send_from_directory('webbuild/dev/phase_1', 'index.html')
+            else:
+                return "No index.html file found in webbuild/dev/phase_1/"
+        elif phase == '2':
+            # Serve index.html from webbuild/dev/phase_2/
+            index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_2', 'index.html')
+            if os.path.exists(index_path):
+                return send_from_directory('webbuild/dev/phase_2', 'index.html')
+            else:
+                return "No index.html file found in webbuild/dev/phase_2/"
+        elif phase == '3':
+            # Serve index.html from webbuild/dev/phase_3/
+            index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_3', 'index.html')
+            if os.path.exists(index_path):
+                return send_from_directory('webbuild/dev/phase_3', 'index.html')
+            else:
+                return "No index.html file found in webbuild/dev/phase_3/"
+        elif phase == '4':
+            # Serve index.html from webbuild/dev/phase_4/
+            index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_4', 'index.html')
+            if os.path.exists(index_path):
+                return send_from_directory('webbuild/dev/phase_4', 'index.html')
+            else:
+                return "No index.html file found in webbuild/dev/phase_4/"
+        elif phase == '5':
+            # Serve index.html from webbuild/dev/phase_5/
+            index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_5', 'index.html')
+            if os.path.exists(index_path):
+                return send_from_directory('webbuild/dev/phase_5', 'index.html')
+            else:
+                return "No index.html file found in webbuild/dev/phase_5/"
         else:
             return f"Phase {phase} not found"
 
@@ -87,7 +121,7 @@ def create_app():
         type_ = flask.request.args.get('type')
         name = flask.request.args.get('name')
 
-        if phase == '0' and type_ and name:
+        if phase in ['0', '1', '2', '3', '4', '5'] and type_ and name:
             # Build the file extension based on the type
             if type_ == 'css':
                 extension = 'css'
@@ -96,18 +130,40 @@ def create_app():
             else:
                 extension = 'html'  # default for html and other types
 
-            # Build path to requested asset in webbuild/dev/phase_0/
-            asset_path = os.path.join('webbuild', 'dev', f'phase_{phase}', type_, f'{name}.{extension}')
-
-            # Check if the file exists
+            # Build path to requested asset in the appropriate phase directory
             abs_asset_path = os.path.join(app.root_path, 'webbuild', 'dev', f'phase_{phase}', type_, f'{name}.{extension}')
             if os.path.exists(abs_asset_path):
-                # Serve the specific file
+                # Serve the specific file from the appropriate phase
                 return send_from_directory(f'webbuild/dev/phase_{phase}/{type_}', f'{name}.{extension}')
             else:
                 abort(404)
         else:
             return "Missing required parameters: phase, type, name"
+
+    # Individual phase endpoints
+    @app.route('/dev/phase0')
+    def dev_phase_0():
+        return send_from_directory('webbuild/dev/phase_0', 'index.html')
+
+    @app.route('/dev/phase1')
+    def dev_phase_1():
+        return send_from_directory('webbuild/dev/phase_1', 'index.html')
+
+    @app.route('/dev/phase2')
+    def dev_phase_2():
+        return send_from_directory('webbuild/dev/phase_2', 'index.html')
+
+    @app.route('/dev/phase3')
+    def dev_phase_3():
+        return send_from_directory('webbuild/dev/phase_3', 'index.html')
+
+    @app.route('/dev/phase4')
+    def dev_phase_4():
+        return send_from_directory('webbuild/dev/phase_4', 'index.html')
+
+    @app.route('/dev/phase5')
+    def dev_phase_5():
+        return send_from_directory('webbuild/dev/phase_5', 'index.html')
 
     return app
 
