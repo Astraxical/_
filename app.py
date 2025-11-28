@@ -2,6 +2,48 @@ import os
 import sys
 from flask import Flask, send_from_directory, abort
 import toml
+from decorators import pipeline_step
+from phase_enum import Phase
+
+class Pipeline:
+    """Main pipeline class to process all phases"""
+    
+    @pipeline_step
+    def run_pipeline(self):
+        """Run the entire pipeline from phase 0 through phase 5"""
+        # Import and run app_c0 to process templates into phase_0
+        from components.app_c0 import process_phase_0
+        result_0 = process_phase_0()
+        
+        # Import and run app_c1 to copy from phase_0 to phase_1
+        from components.app_c1 import copy_to_phase_1
+        result_1 = copy_to_phase_1()
+        
+        # Import and run app_c2 to copy from phase_1 to phase_2
+        from components.app_c2 import copy_to_phase_2
+        result_2 = copy_to_phase_2()
+        
+        # Import and run app_c3 to copy from phase_2 to phase_3
+        from components.app_c3 import copy_to_phase_3
+        result_3 = copy_to_phase_3()
+        
+        # Import and run app_c4 to copy from phase_3 to phase_4
+        from components.app_c4 import copy_to_phase_4
+        result_4 = copy_to_phase_4()
+        
+        # Import and run app_c5 to copy from phase_4 to phase_5
+        from components.app_c5 import copy_to_phase_5
+        result_5 = copy_to_phase_5()
+        
+        return {
+            Phase.PHASE_0: result_0,
+            Phase.PHASE_1: result_1,
+            Phase.PHASE_2: result_2,
+            Phase.PHASE_3: result_3,
+            Phase.PHASE_4: result_4,
+            Phase.PHASE_5: result_5
+        }
+
 
 def create_app():
     app = Flask(__name__,
@@ -30,31 +72,14 @@ def create_app():
     @app.route('/process')
     def process():
         try:
-            # Import and run app_c0 to process templates into phase_0
-            from components.app_c0 import process_phase_0
-            result_0 = process_phase_0()
-
-            # Import and run app_c1 to copy from phase_0 to phase_1
-            from components.app_c1 import copy_to_phase_1
-            result_1 = copy_to_phase_1()
-
-            # Import and run app_c2 to copy from phase_1 to phase_2
-            from components.app_c2 import copy_to_phase_2
-            result_2 = copy_to_phase_2()
-
-            # Import and run app_c3 to copy from phase_2 to phase_3
-            from components.app_c3 import copy_to_phase_3
-            result_3 = copy_to_phase_3()
-
-            # Import and run app_c4 to copy from phase_3 to phase_4
-            from components.app_c4 import copy_to_phase_4
-            result_4 = copy_to_phase_4()
-
-            # Import and run app_c5 to copy from phase_4 to phase_5
-            from components.app_c5 import copy_to_phase_5
-            result_5 = copy_to_phase_5()
-
-            return f"Pipeline processing completed:\n{result_0}\n{result_1}\n{result_2}\n{result_3}\n{result_4}\n{result_5}"
+            pipeline = Pipeline()
+            results = pipeline.run_pipeline()
+            
+            response = "Pipeline processing completed:\n"
+            for phase, result in results.items():
+                response += f"{phase.name}: {result}\n"
+            
+            return response
         except Exception as e:
             return f"Error processing templates: {str(e)}"
 
@@ -65,7 +90,7 @@ def create_app():
         """
         import flask
         phase = flask.request.args.get('phase')
-
+        
         if phase == '0':
             # Serve index.html from webbuild/dev/phase_0/
             index_path = os.path.join(app.root_path, 'webbuild', 'dev', 'phase_0', 'index.html')
@@ -120,7 +145,7 @@ def create_app():
         phase = flask.request.args.get('phase')
         type_ = flask.request.args.get('type')
         name = flask.request.args.get('name')
-
+        
         if phase in ['0', '1', '2', '3', '4', '5'] and type_ and name:
             # Build the file extension based on the type
             if type_ == 'css':
@@ -129,7 +154,7 @@ def create_app():
                 extension = 'js'
             else:
                 extension = 'html'  # default for html and other types
-
+            
             # Build path to requested asset in the appropriate phase directory
             abs_asset_path = os.path.join(app.root_path, 'webbuild', 'dev', f'phase_{phase}', type_, f'{name}.{extension}')
             if os.path.exists(abs_asset_path):
@@ -144,27 +169,27 @@ def create_app():
     @app.route('/dev/phase0')
     def dev_phase_0():
         return send_from_directory('webbuild/dev/phase_0', 'index.html')
-
+        
     @app.route('/dev/phase1')
     def dev_phase_1():
         return send_from_directory('webbuild/dev/phase_1', 'index.html')
-
+        
     @app.route('/dev/phase2')
     def dev_phase_2():
         return send_from_directory('webbuild/dev/phase_2', 'index.html')
-
+        
     @app.route('/dev/phase3')
     def dev_phase_3():
         return send_from_directory('webbuild/dev/phase_3', 'index.html')
-
+        
     @app.route('/dev/phase4')
     def dev_phase_4():
         return send_from_directory('webbuild/dev/phase_4', 'index.html')
-
+        
     @app.route('/dev/phase5')
     def dev_phase_5():
         return send_from_directory('webbuild/dev/phase_5', 'index.html')
-
+    
     return app
 
 # For command-line execution
@@ -172,31 +197,12 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'process':
         # Process templates when called with 'process' argument
         # This runs the entire pipeline
-        from components.app_c0 import process_phase_0
-        result_0 = process_phase_0()
-
-        from components.app_c1 import copy_to_phase_1
-        result_1 = copy_to_phase_1()
-
-        from components.app_c2 import copy_to_phase_2
-        result_2 = copy_to_phase_2()
-
-        from components.app_c3 import copy_to_phase_3
-        result_3 = copy_to_phase_3()
-
-        from components.app_c4 import copy_to_phase_4
-        result_4 = copy_to_phase_4()
-
-        from components.app_c5 import copy_to_phase_5
-        result_5 = copy_to_phase_5()
-
+        pipeline = Pipeline()
+        results = pipeline.run_pipeline()
+        
         print(f"Pipeline processing completed:")
-        print(result_0)
-        print(result_1)
-        print(result_2)
-        print(result_3)
-        print(result_4)
-        print(result_5)
+        for phase, result in results.items():
+            print(f"{phase.name}: {result}")
     else:
         # Run as web server
         app = create_app()
