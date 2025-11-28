@@ -1,0 +1,27 @@
+{
+  "embeds": [
+    {
+      "title": "",
+      "description": "",
+      "url": "",
+      "timestamp": "",
+      "color": 0,
+      "author": {
+        "name": "",
+        "url": "",
+        "icon_url": ""
+      },
+      "thumbnail": {
+        "url": ""
+      },
+      "image": {
+        "url": ""
+      },
+      "footer": {
+        "text": "",
+        "icon_url": ""
+      },
+      "fields": []
+    }
+  ]
+}
