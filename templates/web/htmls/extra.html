@@ -1,0 +1,30 @@
+<!-- Extra content section -->
+<section class="extra-content">
+    <h2>Additional Information</h2>
+    <div class="extra-details">
+        {% if extra_info %}
+        <h3>{{ extra_info.title if extra_info.title else 'Extra Details' }}</h3>
+        <p>{{ extra_info.description if extra_info.description else 'Additional information about the system.' }}</p>
+        
+        {% if extra_info.facts %}
+        <h4>Interesting Facts:</h4>
+        <ul>
+            {% for fact in extra_info.facts %}
+            <li>{{ fact }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        
+        {% if extra_info.system_info %}
+        <h4>System Information:</h4>
+        <p>System Name: {{ extra_info.system_info.name if extra_info.system_info.name else 'Unknown' }}</p>
+        <p>Total Members: {{ extra_info.system_info.member_count if extra_info.system_info.member_count else 'Unknown' }}</p>
+        <p>Established: {{ extra_info.system_info.established if extra_info.system_info.established else 'Unknown' }}</p>
+        {% endif %}
+        {% else %}
+        <h3>System Overview</h3>
+        <p>This section contains additional information about the system and its members.</p>
+        <p>Diversity in experience and perspective is the strength of this system.</p>
+        {% endif %}
+    </div>
+</section>
