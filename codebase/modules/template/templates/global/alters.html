@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Alter Switching - Multi-House App{% endblock %}
+
+{% block content %}
+<div class="alters-control">
+    <h1>Alter Control Panel</h1>
+    <p>Current fronting alter: <strong>{{ current_alter|title }}</strong></p>
+
+    <div class="alters-list">
+        <h2>Available Alters</h2>
+        <form method="post" action="/switch_alter/seles" style="display:inline;">
+            <button type="submit" class="alter-btn {% if current_alter == 'seles' %}active{% else %}inactive{% endif %}">
+                Seles {% if current_alter == 'seles' %}(Active){% endif %}
+            </button>
+        </form>
+        
+        <form method="post" action="/switch_alter/dexen" style="display:inline;">
+            <button type="submit" class="alter-btn {% if current_alter == 'dexen' %}active{% else %}inactive{% endif %}">
+                Dexen {% if current_alter == 'dexen' %}(Active){% endif %}
+            </button>
+        </form>
+        
+        <form method="post" action="/switch_alter/yuki" style="display:inline;">
+            <button type="submit" class="alter-btn {% if current_alter == 'yuki' %}active{% else %}inactive{% endif %}">
+                Yuki {% if current_alter == 'yuki' %}(Active){% endif %}
+            </button>
+        </form>
+    </div>
+
+    <div class="alter-status">
+        <h2>Alter Status</h2>
+        <ul>
+        {% for alter, status in alters_status.items() %}
+            <li class="{{ 'active' if status else 'inactive' }}">
+                {{ alter|title }}: {{ "Active" if status else "Inactive" }}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="alter-info">
+        <h2>About Current Alter</h2>
+        {% include 'partials/' + current_alter + '_bio.html' ignore missing %}
+        {% include current_alter + '/bio.html' ignore missing %}
+    </div>
+    
+    <a href="/">Back to Home</a>
+</div>
+{% endblock %}

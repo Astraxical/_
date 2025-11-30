@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from components import setup_components
+from modules.template import render_alter_template
 import config
 
 app = FastAPI(
@@ -15,30 +15,22 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Setup components (integration layer)
 setup_components(app)
 
-# Add Jinja2 templates
-templates = Jinja2Templates(directory="templates")
-
 @app.get("/")
 def read_root(request: Request):
-    # Simple context without alter system
     """
-    Render the application's homepage with a default 'global' alter state.
-    
-    Provides a template context containing the incoming request, `current_alter` set to "global", and `alters_status` mapping for "seles", "dexen", and "yuki" (all False).
-    
+    Render the application's homepage with the current alter's context.
+
+    Provides a template context containing the incoming request,
+    `current_alter` set to the currently fronting alter, and
+    `alters_status` mapping showing which alters are active.
+
     Parameters:
         request (Request): The incoming HTTP request used by the template.
-    
+
     Returns:
         TemplateResponse: The response rendering "index.html" with the homepage context.
     """
-    context = {
-        "request": request,
-        "current_alter": "global",
-        "alters_status": {"seles": False, "dexen": False, "yuki": False}
-    }
-
-    return templates.TemplateResponse("index.html", context)
+    return render_alter_template(request, "index.html")
 
 if __name__ == "__main__":
     import uvicorn
