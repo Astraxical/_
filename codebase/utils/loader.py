@@ -35,13 +35,13 @@ def validate_path(path: str) -> bool:
 def resolve_template_path(template_name: str, module_name: Optional[str] = None) -> Optional[str]:
     """
     Resolve a template filename to an existing, safe filesystem path.
-    
+
     Checks a module-specific templates directory first (if module_name is provided), then the global templates directory, and also accepts an absolute path when it resides inside the project root. Only returns a path that exists and passes the module's path-safety checks.
-    
+
     Parameters:
         template_name (str): Template filename or absolute path.
         module_name (Optional[str]): Module name to prefer a module-scoped templates directory.
-    
+
     Returns:
         Optional[str]: The resolved filesystem path to the template if found and valid, or `None` if not found or not permitted.
     """
@@ -50,21 +50,38 @@ def resolve_template_path(template_name: str, module_name: Optional[str] = None)
         if validate_path(template_name):
             return template_name if os.path.exists(template_name) else None
         return None
-    
+
     # If module is specified, check module's templates first
     if module_name:
         module_template_path = f"modules/{module_name}/templates/{template_name}"
         if validate_path(module_template_path) and os.path.exists(module_template_path):
             return module_template_path
-    
+
     # Then check global templates
     global_template_path = f"templates/{template_name}"
     if validate_path(global_template_path) and os.path.exists(global_template_path):
         return global_template_path
-    
-    # Finally, check alter-specific templates
-    # This would require access to the template engine to know the current alter
-    # For now, return None if not found in module or global locations
+
+    # Check for alter-specific templates (requires importing template engine)
+    try:
+        from modules.template.engine import TemplateEngine
+        template_engine = TemplateEngine()
+
+        # Check alter-specific templates
+        if template_engine.current_alter and template_engine.current_alter != "global":
+            alter_template_path = f"modules/template/templates/{template_engine.current_alter}/{template_name}"
+            if validate_path(alter_template_path) and os.path.exists(alter_template_path):
+                return alter_template_path
+
+        # Then check global templates in the template module
+        global_template_path = f"modules/template/templates/global/{template_name}"
+        if validate_path(global_template_path) and os.path.exists(global_template_path):
+            return global_template_path
+
+    except ImportError:
+        # If template engine isn't available, just continue with regular resolution
+        pass
+
     return None
 
 
