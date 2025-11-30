@@ -3,14 +3,12 @@ Alter Module - The System's Face
 Provides the alter system and template rendering functionality
 """
 from fastapi import APIRouter
-from .routes import alter
+from .routes import router as alter_router
 
 
-# Create router for alter module
+# Export the router for component integration
 router = APIRouter(prefix="/alter")
-
-# Include routes
-router.include_router(alter.router, tags=["alter"])
+router.include_router(alter_router)
 
 
 def get_module_info():
