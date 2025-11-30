@@ -8,6 +8,7 @@
     {% if current_alter and current_alter != 'global' %}
     <link rel="stylesheet" href="/static/css/{{ current_alter }}.css">
     {% endif %}
+    <link rel="stylesheet" href="/static/css/theme-toggle.css">
     {% block extra_css %}{% endblock %}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -30,6 +31,11 @@
                         {{ current_alter|title }}
                     </li>
                     {% endif %}
+                    <li>
+                        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -47,6 +53,46 @@
     </footer>
 
     <script src="/static/js/htmx.min.js"></script>
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = themeToggle.querySelector('i');
+            const body = document.body;
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+            // Set initial theme based on saved preference or OS preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+
+                if (currentTheme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
