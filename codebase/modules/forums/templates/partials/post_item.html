@@ -1,0 +1,9 @@
+<div class="content-card">
+    <div class="card-header">
+        <strong>{{ post.author }}</strong>
+        <span class="post-date">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+    </div>
+    <div class="post-content">
+        <p>{{ post.content }}</p>
+    </div>
+</div>

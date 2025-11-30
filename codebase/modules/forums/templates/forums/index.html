@@ -8,32 +8,24 @@
 {% endblock %}
 
 {% block content %}
-<div class="forums-container">
+<div class="forum-container">
     <div class="forums-header">
         <h1>Community Forums</h1>
         <p>Join the discussion on various topics.</p>
     </div>
 
-    <div class="create-thread-section">
+    <div class="form-section">
         <a href="/forums/new" class="btn btn-primary">Create New Thread</a>
     </div>
 
     <div class="forums-list">
         <h2>Active Discussions</h2>
         {% if threads %}
-        <ul class="thread-list">
+        <div class="threads-container">
             {% for thread in threads %}
-            <li class="thread-item">
-                <a href="/forums/threads/{{ thread.id }}">
-                    <h3>{{ thread.title }}</h3>
-                    <div class="thread-meta">
-                        <span class="author">By {{ thread.author }}</span>
-                        <span class="date">{{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
-                    </div>
-                </a>
-            </li>
+                {% include 'partials/thread_item.html' %}
             {% endfor %}
-        </ul>
+        </div>
         {% else %}
         <p>No threads yet. Be the first to start a discussion!</p>
         {% endif %}

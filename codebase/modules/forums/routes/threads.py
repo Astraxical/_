@@ -67,7 +67,8 @@ def get_thread(request: Request, thread_id: int, db: Session = None):
     return templates.TemplateResponse("forums/thread.html", {
         "request": request,
         "thread": thread,
-        "posts": posts
+        "posts": posts,
+        "thread_id": thread_id
     })
 
 

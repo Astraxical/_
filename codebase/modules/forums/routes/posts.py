@@ -1,7 +1,7 @@
 """
 Posts routes for the forums module
 """
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Request, HTTPException, Form
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import Optional
@@ -82,34 +82,39 @@ def get_post(request: Request, post_id: int, db: Session = None):
 
 
 @router.post("/")
-def create_post(post: PostCreate, db: Session = None):
+async def create_post(content: str = Form(...), thread_id: int = Form(...), author: str = Form(...), db: Session = None):
     """
     Create a new forum post.
 
     Args:
-        post: Post data to create
+        content: Content of the post
+        thread_id: ID of the thread to post in
+        author: Author of the post
 
     Returns:
-        Created post information
+        Redirect to the thread page
     """
     if db is None:
         from utils.db import get_db
         db = next(get_db())
 
     # Verify that the thread exists
-    thread = db.query(ForumThread).filter(ForumThread.id == post.thread_id).first()
+    thread = db.query(ForumThread).filter(ForumThread.id == thread_id).first()
     if not thread:
         raise HTTPException(status_code=404, detail="Thread not found")
 
     db_post = ForumPost(
-        content=post.content,
-        thread_id=post.thread_id,
-        author=post.author
+        content=content,
+        thread_id=thread_id,
+        author=author
     )
     db.add(db_post)
     db.commit()
     db.refresh(db_post)
-    return db_post
+
+    # Redirect back to the thread page
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url=f"/forums/threads/{thread_id}", status_code=303)
 
 
 @router.put("/{post_id}")

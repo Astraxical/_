@@ -23,15 +23,7 @@
 
         {% if posts %}
             {% for post in posts %}
-            <div class="post">
-                <div class="post-header">
-                    <strong>{{ post.author }}</strong>
-                    <span class="post-date">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
-                </div>
-                <div class="post-content">
-                    <p>{{ post.content }}</p>
-                </div>
-            </div>
+                {% include 'partials/post_item.html' %}
             {% endfor %}
         {% else %}
             <p>No replies yet. Be the first to comment!</p>
@@ -40,18 +32,7 @@
 
     <div class="create-post-form">
         <h3>Add a Reply</h3>
-        <form method="POST" action="/forums/posts">
-            <input type="hidden" name="thread_id" value="{{ thread.id }}">
-            <div class="form-group">
-                <label for="author">Your Name:</label>
-                <input type="text" id="author" name="author" required>
-            </div>
-            <div class="form-group">
-                <label for="content">Your Reply:</label>
-                <textarea id="content" name="content" required></textarea>
-            </div>
-            <button type="submit" class="btn">Post Reply</button>
-        </form>
+        {% include 'partials/create_post_form.html' %}
     </div>
 </div>
 {% endblock %}

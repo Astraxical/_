@@ -1,0 +1,9 @@
+<div class="list-item">
+    <a href="/forums/threads/{{ thread.id }}">
+        <h3 class="card-title">{{ thread.title }}</h3>
+        <div class="card-subtitle">
+            <span class="author">By {{ thread.author }}</span>
+            <span class="date">{{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+        </div>
+    </a>
+</div>
