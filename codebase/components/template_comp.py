@@ -4,6 +4,7 @@ Template Component - Integration for Template Module (Alter System)
 
 from fastapi import FastAPI
 from modules.template.routes.switcher import router as switcher_router
+from modules.template.routes.api import router as api_router
 
 
 def setup_template(app: FastAPI):
@@ -21,9 +22,11 @@ def setup_template(app: FastAPI):
     """
     # Mount the switcher routes directly to have /switch_alter endpoint available
     app.include_router(switcher_router)
+    # Mount the API routes for alter status
+    app.include_router(api_router, prefix="/api", tags=["alter-api"])
 
     return {
         "name": "template",
-        "routes": ["/alters", "/switch_alter/*"],
+        "routes": ["/alters", "/switch_alter/*", "/api/alter-status"],
         "initialized": True
     }

@@ -141,29 +141,34 @@ def get_template_context(request: Request) -> Dict[str, Any]:
 def render_alter_template(request: Request, template_name: str, **kwargs) -> Any:
     """
     Render a template with the appropriate context for the current alter.
-    
+
     Parameters:
         request (Request): The incoming HTTP request
         template_name (str): Name of the template to render
         **kwargs: Additional context variables
-    
+
     Returns:
         Any: Rendered template response
     """
     # Find the appropriate template file and directory
     template_path, template_dir = find_template_for_alter(template_name)
-    
+
     if template_path is None:
         # If template not found, raise an error
         raise ValueError(f"Template {template_name} not found for any alter")
-    
+
     # Create Jinja2Templates instance with the correct directory
     templates = Jinja2Templates(directory=template_dir)
-    
+
     # Get the base context with alter information
     context = get_template_context(request)
-    
+
     # Add any additional context
     context.update(kwargs)
-    
+
     return templates.TemplateResponse(template_name, context)
+
+
+# Import the routers to make them accessible when the module is imported
+from .routes.switcher import router as switcher_router
+from .routes.api import router as api_router
