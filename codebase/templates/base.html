@@ -9,19 +9,29 @@
     <link rel="stylesheet" href="/static/css/{{ current_alter }}.css">
     {% endif %}
     {% block extra_css %}{% endblock %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <header>
         <nav>
-            <h1>Multi-House Application</h1>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/forums">Forums</a></li>
-                <li><a href="/rtc">RTC</a></li>
-                {% if current_alter %}
-                <li>Current Alter: {{ current_alter.title() }}</li>
-                {% endif %}
-            </ul>
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <h1><i class="fas fa-home"></i> Multi-House App</h1>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/forums"><i class="fas fa-comments"></i> Forums</a></li>
+                    <li><a href="/rtc"><i class="fas fa-bolt"></i> RTC</a></li>
+                    <li><a href="/admin"><i class="fas fa-cog"></i> Admin</a></li>
+                    {% if current_alter %}
+                    <li class="alter-indicator">
+                        <i class="fas fa-user"></i>
+                        {% if current_alter == 'seles' %}🎭{% elif current_alter == 'dexen' %}🤖{% elif current_alter == 'yuki' %}❄️{% endif %}
+                        {{ current_alter|title }}
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
         </nav>
     </header>
 
@@ -30,7 +40,10 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Multi-House App. Current alter: {{ current_alter or 'global' }}.</p>
+        <div class="footer-content">
+            <p>&copy; 2025 Multi-House App. All rights reserved.</p>
+            <p>Current alter: <strong>{{ current_alter or 'global' }}</strong></p>
+        </div>
     </footer>
 
     <script src="/static/js/htmx.min.js"></script>
