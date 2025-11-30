@@ -14,6 +14,16 @@
     --border-radius: 8px;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --border-color: #dee2e6;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --header-gradient-start: #4361ee;
+    --header-gradient-end: #3f37c9;
+    --footer-gradient-start: #3f37c9;
+    --footer-gradient-end: #4361ee;
 }
 
 * {
@@ -25,15 +35,15 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--dark-color);
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #c3cfe2 100%);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
 header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
     color: white;
     padding: 1rem 2rem;
     box-shadow: var(--box-shadow);
@@ -98,7 +108,7 @@ main {
 }
 
 .container {
-    background: white;
+    background: var(--bg-secondary);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     padding: 2rem;
@@ -134,12 +144,13 @@ main {
 }
 
 .modules-overview li {
-    background: #f8f9fa;
+    background: var(--bg-primary);
     margin-bottom: 1rem;
     padding: 1rem;
     border-radius: var(--border-radius);
     border-left: 4px solid var(--primary-color);
     transition: var(--transition);
+    border: 1px solid var(--border-color);
 }
 
 .modules-overview li:hover {
@@ -173,10 +184,10 @@ main {
 .alter-item {
     flex: 1;
     min-width: 200px;
-    background: #f8f9fa;
+    background: var(--bg-primary);
     padding: 1rem;
     border-radius: var(--border-radius);
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -211,7 +222,7 @@ main {
 }
 
 footer {
-    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    background: linear-gradient(135deg, var(--footer-gradient-start) 0%, var(--footer-gradient-end) 100%);
     color: white;
     text-align: center;
     padding: 1.5rem;
@@ -240,12 +251,13 @@ footer {
 }
 
 .card {
-    background: white;
+    background: var(--bg-secondary);
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
+    box-shadow: var(--card-shadow);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     transition: var(--transition);
+    border: 1px solid var(--border-color);
 }
 
 .card:hover {
