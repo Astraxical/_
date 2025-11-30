@@ -6,6 +6,11 @@ from modules.template.engine import TemplateEngine
 
 def init_database():
     # Initialize database tables
+    """
+    Initialize the database schema and seed default alters and module registrations.
+    
+    Ensures database tables exist, adds missing alter entries based on TemplateEngine.alters_status, registers a predefined set of modules in ModuleRegistry if they are absent, and commits the changes. On error the transaction is rolled back; the database session is always closed.
+    """
     init_db()
     
     db = SessionLocal()

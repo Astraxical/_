@@ -8,7 +8,16 @@ from fastapi import FastAPI
 
 def validate_routes(components: List[Dict[str, Any]]) -> bool:
     """
-    Validates that there are no route conflicts between components
+    Detects duplicate route paths across the provided components.
+    
+    Parameters:
+        components (List[Dict[str, Any]]): Iterable of component metadata dictionaries; when present, each component's 'routes' key should map to an iterable of route path strings.
+    
+    Returns:
+        True if no duplicate routes are found.
+    
+    Raises:
+        ValueError: If a duplicate route path is detected.
     """
     all_routes = []
     for comp in components:
@@ -22,7 +31,15 @@ def validate_routes(components: List[Dict[str, Any]]) -> bool:
 
 def setup_components(app: FastAPI):
     """
-    Initialize and setup all components
+    Register and initialize application components on the provided FastAPI app.
+    
+    This sets up the admin, forums, and RTC components, collects each component's metadata, and validates their routes to detect conflicts before runtime.
+    
+    Parameters:
+        app (FastAPI): The FastAPI application instance to register components and routes on.
+    
+    Raises:
+        ValueError: If a route conflict is detected across components.
     """
     # Import components - following the integration chain pattern
     from components.admin_comp import setup_admin
