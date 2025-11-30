@@ -45,7 +45,6 @@ def setup_components(app: FastAPI):
     from components.admin_comp import setup_admin
     from components.forums_comp import setup_forums
     from components.rtc_comp import setup_rtc
-    from components.template_comp import setup_template
 
     # Setup each component
     components_info = []
@@ -61,10 +60,6 @@ def setup_components(app: FastAPI):
     # RTC component
     rtc_info = setup_rtc(app)
     components_info.append(rtc_info)
-
-    # Template component (for alter system)
-    template_info = setup_template(app)
-    components_info.append(template_info)
 
     # Validate all routes to prevent conflicts
     validate_routes(components_info)
