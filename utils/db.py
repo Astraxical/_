@@ -52,9 +52,6 @@ class AuditLog(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
     details = Column(Text)
 
-# Import forum models after base is defined to avoid circular imports
-from modules.forums.models import ForumCategory, ForumThread, ForumPost
-
 # Create all tables
 def init_db():
     Base.metadata.create_all(bind=engine)
