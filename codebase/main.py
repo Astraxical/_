@@ -23,12 +23,12 @@ def read_root(request: Request):
     # Simple context without alter system
     """
     Render the application's homepage with a default 'global' alter state.
-
+    
     Provides a template context containing the incoming request, `current_alter` set to "global", and `alters_status` mapping for "seles", "dexen", and "yuki" (all False).
-
+    
     Parameters:
         request (Request): The incoming HTTP request used by the template.
-
+    
     Returns:
         TemplateResponse: The response rendering "index.html" with the homepage context.
     """
