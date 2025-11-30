@@ -13,13 +13,13 @@ router.include_router(alter_router)
 
 def get_module_info():
     """
-    Provide metadata for the Alter module used by external registries.
-
+    Return metadata for the Alter module intended for external registries.
+    
     Returns:
-        module_info (dict): Dictionary with module metadata:
-            - name (str): Module identifier ("alter").
-            - routes (list[str]): Route patterns exposed by the module (e.g., "/alter/*").
-            - local_data_path (str): Relative path to the module's local data directory ("modules/alter/data").
+        module_info (dict): Mapping containing module metadata:
+            - name (str): Module identifier, `"alter"`.
+            - routes (list[str]): Route patterns exposed by the module, e.g. `"/alter/*"`, `"/alter/switch/*"`, `"/alter/status"`.
+            - local_data_path (str): Relative path to the module's local data directory, `"modules/alter/data"`.
     """
     return {
         "name": "alter",
