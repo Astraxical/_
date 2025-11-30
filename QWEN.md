@@ -133,32 +133,6 @@ project/
     │   │   └── data/
     │   │       └── sessions.db       # In-memory? No — persistent SQLite (WAL)
     │   │
-    │   ├── template/        # 🎭 House Template — *The System's Face*
-    │   │   ├── __init__.py  # → exports `render_alter(template, **ctx)`
-    │   │   ├── engine.py    # Jinja2 env + alters.csv loader
-    │   │   ├── alters.csv   # Fronting status: seles,1; dexen,0; yuki,0
-    │   │   │
-    │   │   ├── templates/   # 🖼️ *Local Templates* — per-alter overrides
-    │   │   │   ├── global/  # Base templates (fallback)
-    │   │   │   │   ├── intro.html
-    │   │   │   │   └── bio.html
-    │   │   │   │
-    │   │   │   ├── seles/   # ← Overrides global/intro.html *only for Seles*
-    │   │   │   │   └── intro.html
-    │   │   │   └── dexen/
-    │   │   │       └── bio.html
-    │   │   │
-    │   │   ├── static/
-    │   │   │   └── css/
-    │   │   │       ├── global.css
-    │   │   │       ├── seles.css     # ← loaded if Seles fronting
-    │   │   │       └── yuki.css
-    │   │   │
-    │   │   └── data/
-    │   │       └── alters/   # Per-alter persistent state
-    │   │           ├── seles.json  # {"last_fronted": "2025-11-30", "mood": "happy"}
-    │   │           └── dexen.json
-    │   │
     │   ├── admin/           # 🔑 House Admin — *Your Control Room*
     │   │   ├── __init__.py
     │   │   ├── auth.py
@@ -170,7 +144,7 @@ project/
     │   │   ├── templates/
     │   │   │   └── admin/
     │   │   │       ├── dashboard.html
-    │   │       │   └── module_control.html
+    │   │   │       └── module_control.html
     │   │   ├── static/
     │   │   │   └── css/
     │   │   │       └── admin.css   # Dark theme, red accents
@@ -233,13 +207,6 @@ Each module is designed to be autonomous and can be developed independently. The
 
 New modules can use the `_template_module/` as a blueprint.
 
-### Template Alter System
-
-The template alter system allows different UI themes and content based on which alter is "fronting". The system works by:
-
-1. Loading alter status from `modules/template/data/alters.csv`
-2. Creating a Jinja2 environment with search paths prioritizing the current fronting alter
-3. Rendering templates with alter-specific context
 
 ### Database Models
 
