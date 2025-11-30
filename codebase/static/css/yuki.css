@@ -1,14 +1,14 @@
 /*
- * Seles-specific CSS
+ * Yuki-specific CSS
  */
 
 :root {
-    --primary-color: #ff6b6b;
-    --secondary-color: #ff8e8e;
-    --accent-color: #ffd166;
-    --text-color: #333;
-    --background-start: #ffd166;
-    --background-end: #ff9a8b;
+    --primary-color: #45b7d1;
+    --secondary-color: #6baed6;
+    --accent-color: #f0b193;
+    --text-color: #3a3a3a;
+    --background-start: #f0f7ff;
+    --background-end: #a3cfff;
 }
 
 body {
@@ -17,7 +17,7 @@ body {
 }
 
 .alter-indicator::before {
-    content: "🎭 ";
+    content: "❄️ ";
 }
 
 .nav-links a:hover {
