@@ -1,0 +1,18 @@
+/* Dexen-specific styles */
+body {
+    background-color: #e6ffe6;
+    color: #003300;
+}
+
+.alter-btn.dexen {
+    background-color: #00cc66;
+    color: white;
+}
+
+.alter-item.dexen {
+    border-left: 4px solid #00cc66;
+}
+
+.active.alter-item.dexen {
+    background-color: #ccffcc;
+}
