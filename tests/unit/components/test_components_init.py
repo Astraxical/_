@@ -286,3 +286,115 @@ class TestComponentIntegration:
         
         result = validate_routes(components)
         assert result is True
+
+class TestSetupComponentsWithTemplate:
+    """Tests for setup_components with template component"""
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    def test_setup_components_includes_template(self, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that setup_components includes template component"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": ["/template/*"], "initialized": True}
+        mock_admin.return_value = {"name": "admin", "routes": ["/admin/*"], "initialized": True}
+        mock_forums.return_value = {"name": "forums", "routes": ["/forums/*"], "initialized": True}
+        mock_rtc.return_value = {"name": "rtc", "routes": ["/rtc/*"], "initialized": True}
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        # Template should be setup first
+        mock_template.assert_called_once_with(app)
+        mock_admin.assert_called_once_with(app)
+        mock_forums.assert_called_once_with(app)
+        mock_rtc.assert_called_once_with(app)
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    def test_setup_components_template_first(self, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that template component is setup before others"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        call_order = []
+        
+        def track_template(app):
+            call_order.append('template')
+            return {"name": "template", "routes": ["/template/*"], "initialized": True}
+        
+        def track_admin(app):
+            call_order.append('admin')
+            return {"name": "admin", "routes": ["/admin/*"], "initialized": True}
+        
+        def track_forums(app):
+            call_order.append('forums')
+            return {"name": "forums", "routes": ["/forums/*"], "initialized": True}
+        
+        def track_rtc(app):
+            call_order.append('rtc')
+            return {"name": "rtc", "routes": ["/rtc/*"], "initialized": True}
+        
+        mock_template.side_effect = track_template
+        mock_admin.side_effect = track_admin
+        mock_forums.side_effect = track_forums
+        mock_rtc.side_effect = track_rtc
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        # Template should be first
+        assert call_order[0] == 'template'
+        assert len(call_order) == 4
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    @patch('components.validate_routes')
+    def test_setup_components_validates_all_four_components(self, mock_validate, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that all four components are validated"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": ["/template/*"], "initialized": True}
+        mock_admin.return_value = {"name": "admin", "routes": ["/admin/*"], "initialized": True}
+        mock_forums.return_value = {"name": "forums", "routes": ["/forums/*"], "initialized": True}
+        mock_rtc.return_value = {"name": "rtc", "routes": ["/rtc/*"], "initialized": True}
+        mock_validate.return_value = True
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        # validate_routes should be called with all four components
+        validate_call_args = mock_validate.call_args[0][0]
+        assert len(validate_call_args) == 4
+        component_names = {c["name"] for c in validate_call_args}
+        assert component_names == {"template", "admin", "forums", "rtc"}
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    @patch('builtins.print')
+    def test_setup_components_prints_success_message(self, mock_print, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that success message includes count of 4 components"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": ["/template/*"], "initialized": True}
+        mock_admin.return_value = {"name": "admin", "routes": ["/admin/*"], "initialized": True}
+        mock_forums.return_value = {"name": "forums", "routes": ["/forums/*"], "initialized": True}
+        mock_rtc.return_value = {"name": "rtc", "routes": ["/rtc/*"], "initialized": True}
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        # Should print success with 4 components
+        success_calls = [call for call in mock_print.call_args_list if "4" in str(call)]
+        assert len(success_calls) > 0

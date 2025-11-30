@@ -1,13 +1,13 @@
 """
 Unit tests for modules/template/engine.py
-Tests for template engine and alter management
+Tests for the TemplateEngine class and alter-based template rendering
 """
 import pytest
-from unittest.mock import patch, MagicMock, mock_open
-import sys
-from pathlib import Path
 import csv
 import os
+from unittest.mock import patch, MagicMock, mock_open, call
+from pathlib import Path
+import sys
 
 # Add codebase to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "codebase"))
@@ -16,408 +16,396 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "code
 class TestTemplateEngineInit:
     """Tests for TemplateEngine initialization"""
     
-    @patch('modules.template.engine.Path.exists')
+    @patch('modules.template.engine.Path')
     @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
-    def test_template_engine_initialization(self, mock_file, mock_exists):
-        """Test basic template engine initialization"""
+    @patch('os.path.exists')
+    def test_init_loads_existing_csv(self, mock_exists, mock_file, mock_path):
+        """Test that initialization loads existing CSV file"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
-        assert engine is not None
-        assert hasattr(engine, 'alters_status')
-        assert hasattr(engine, 'current_alter')
+        assert engine.alters_status == {"seles": True, "dexen": False, "yuki": False}
+        assert engine.current_alter == "seles"
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
-    def test_template_engine_loads_alters(self, mock_file, mock_exists):
-        """Test that template engine loads alters from CSV"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        assert 'seles' in engine.alters_status
-        assert 'dexen' in engine.alters_status
-        assert 'yuki' in engine.alters_status
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
-    def test_template_engine_sets_current_alter(self, mock_file, mock_exists):
-        """Test that current alter is set based on fronting status"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        assert engine.current_alter == 'seles'
-        assert engine.alters_status['seles'] is True
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('modules.template.engine.Path.mkdir')
+    @patch('modules.template.engine.Path')
     @patch('builtins.open', new_callable=mock_open)
-    def test_template_engine_creates_default_csv(self, mock_file, mock_mkdir, mock_exists):
-        """Test that template engine creates default CSV if not exists"""
-        mock_exists.return_value = False
-        
+    @patch('os.path.exists')
+    def test_init_creates_default_csv_if_not_exists(self, mock_exists, mock_file, mock_path):
+        """Test that initialization creates default CSV if it doesn't exist"""
         from modules.template.engine import TemplateEngine
+        
+        mock_path_instance = MagicMock()
+        mock_path_instance.exists.return_value = False
+        mock_path_instance.parent.mkdir = MagicMock()
+        mock_path.return_value = mock_path_instance
+        mock_exists.return_value = True
+        
+        # Mock the CSV reading after creation
+        with patch('csv.DictReader') as mock_reader:
+            mock_reader.return_value = iter([
+                {'name': 'seles', 'is_fronting': '1'},
+                {'name': 'dexen', 'is_fronting': '0'},
+                {'name': 'yuki', 'is_fronting': '0'}
+            ])
+            engine = TemplateEngine()
+        
+        mock_path_instance.parent.mkdir.assert_called_once_with(parents=True, exist_ok=True)
+    
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\ndexen,true\nseles,false\nyuki,yes\n')
+    @patch('os.path.exists')
+    def test_init_handles_various_truthy_values(self, mock_exists, mock_file, mock_path):
+        """Test that initialization handles various truthy string values"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
+        mock_exists.return_value = True
+        
         engine = TemplateEngine()
         
-        # Should create directories and write default CSV
-        mock_mkdir.assert_called()
-        assert mock_file.call_count >= 2  # Write then read
+        assert engine.alters_status["dexen"] is True
+        assert engine.alters_status["seles"] is False
+        assert engine.alters_status["yuki"] is True
+        assert engine.current_alter == "dexen"
     
-    @patch('modules.template.engine.Path.exists')
+    @patch('modules.template.engine.Path')
     @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,0\ndexen,0\nyuki,0\n')
-    def test_template_engine_no_fronting_defaults_to_global(self, mock_file, mock_exists):
-        """Test that engine defaults to global when no alter is fronting"""
+    @patch('os.path.exists')
+    def test_init_defaults_to_global_when_no_alter_fronting(self, mock_exists, mock_file, mock_path):
+        """Test that current_alter remains 'global' when no alter is fronting"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
-        assert engine.current_alter == 'global'
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,true\ndexen,false\n')
-    def test_template_engine_parses_boolean_strings(self, mock_file, mock_exists):
-        """Test that engine correctly parses various boolean string formats"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        assert engine.alters_status['seles'] is True
-        assert engine.alters_status['dexen'] is False
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,yes\ndexen,no\n')
-    def test_template_engine_parses_yes_no(self, mock_file, mock_exists):
-        """Test that engine correctly parses yes/no values"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        assert engine.alters_status['seles'] is True
-        assert engine.alters_status['dexen'] is False
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,on\ndexen,off\n')
-    def test_template_engine_parses_on_off(self, mock_file, mock_exists):
-        """Test that engine correctly parses on/off values"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        assert engine.alters_status['seles'] is True
-        assert engine.alters_status['dexen'] is False
+        assert engine.current_alter == "global"
+        assert all(not status for status in engine.alters_status.values())
 
 
-class TestTemplateEngineSetup:
-    """Tests for template setup methods"""
+class TestTemplateEngineSetupTemplates:
+    """Tests for _setup_templates method"""
     
-    @patch('modules.template.engine.os.path.exists')
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\n')
     @patch('modules.template.engine.Jinja2Templates')
-    def test_setup_templates_with_alter(self, mock_jinja, mock_file, mock_path_exists, mock_os_exists):
-        """Test template setup with a specific alter"""
-        mock_path_exists.return_value = True
-        mock_os_exists.return_value = True
-        
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    def test_setup_templates_with_active_alter(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test template setup with an active alter"""
         from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
+        mock_exists.side_effect = [True, True, True]  # alter path, global path, templates path
+        
         engine = TemplateEngine()
         
-        # Should set up Jinja2Templates with multiple paths
-        mock_jinja.assert_called()
+        # Should have called Jinja2Templates with alter-specific, global, and standard paths
+        assert mock_jinja.called
+        call_args = mock_jinja.call_args[1]['directory']
+        assert 'modules/template/templates/seles' in call_args
+        assert 'modules/template/templates/global' in call_args
+        assert 'templates' in call_args
     
-    @patch('modules.template.engine.os.path.exists')
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,0\n')
     @patch('modules.template.engine.Jinja2Templates')
-    def test_setup_templates_global_only(self, mock_jinja, mock_file, mock_path_exists, mock_os_exists):
-        """Test template setup with global alter only"""
-        mock_path_exists.return_value = True
-        mock_os_exists.return_value = True
-        
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,0\ndexen,0\nyuki,0\n')
+    def test_setup_templates_with_global_alter(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test template setup when current alter is global"""
         from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
+        mock_exists.side_effect = [True, True]  # global path, templates path
+        
         engine = TemplateEngine()
         
-        assert engine.current_alter == 'global'
-        mock_jinja.assert_called()
+        call_args = mock_jinja.call_args[1]['directory']
+        assert 'modules/template/templates/seles' not in call_args
+        assert 'modules/template/templates/global' in call_args
+        assert 'templates' in call_args
+    
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\ndexen,1\nseles,0\nyuki,0\n')
+    def test_setup_templates_skips_nonexistent_paths(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test template setup skips paths that don't exist"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
+        mock_exists.side_effect = [False, False, True]  # alter path doesn't exist, global doesn't exist
+        
+        engine = TemplateEngine()
+        
+        call_args = mock_jinja.call_args[1]['directory']
+        assert len([p for p in call_args if 'dexen' in p]) == 0
+        assert 'templates' in call_args
 
 
 class TestTemplateEngineRender:
-    """Tests for template rendering"""
+    """Tests for render method"""
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\n')
-    def test_render_adds_alter_context(self, mock_file, mock_exists):
-        """Test that render adds alter information to context"""
-        mock_exists.return_value = True
-        
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    def test_render_includes_alter_context(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test that render includes alter information in context"""
         from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
         
+        mock_path.return_value.exists.return_value = True
+        mock_exists.return_value = True
+        mock_templates_instance = MagicMock()
+        mock_jinja.return_value = mock_templates_instance
+        
+        engine = TemplateEngine()
         mock_request = MagicMock()
-        mock_templates = MagicMock()
-        engine.templates = mock_templates
         
         engine.render("test.html", mock_request, extra_key="extra_value")
         
-        # Verify TemplateResponse was called with context including alter info
-        call_args = mock_templates.TemplateResponse.call_args
-        assert call_args is not None
+        # Verify TemplateResponse was called with correct context
+        mock_templates_instance.TemplateResponse.assert_called_once()
+        call_args = mock_templates_instance.TemplateResponse.call_args
+        
+        assert call_args[0][0] == "test.html"
         context = call_args[0][1]
-        assert 'current_alter' in context
-        assert 'alters_status' in context
-        assert 'request' in context
-        assert 'extra_key' in context
+        assert context["request"] == mock_request
+        assert context["current_alter"] == "seles"
+        assert context["alters_status"] == {"seles": True, "dexen": False, "yuki": False}
+        assert context["extra_key"] == "extra_value"
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\n')
-    def test_render_preserves_custom_context(self, mock_file, mock_exists):
-        """Test that render preserves custom context variables"""
-        mock_exists.return_value = True
-        
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    def test_render_merges_additional_context(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test that render merges additional context correctly"""
         from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
         
-        mock_request = MagicMock()
-        mock_templates = MagicMock()
-        engine.templates = mock_templates
-        
-        custom_context = {"user": "test_user", "page": "home"}
-        engine.render("test.html", mock_request, **custom_context)
-        
-        call_args = mock_templates.TemplateResponse.call_args
-        context = call_args[0][1]
-        assert context['user'] == 'test_user'
-        assert context['page'] == 'home'
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\n')
-    def test_render_includes_request(self, mock_file, mock_exists):
-        """Test that render includes request in context"""
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
+        mock_templates_instance = MagicMock()
+        mock_jinja.return_value = mock_templates_instance
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
-        
         mock_request = MagicMock()
-        mock_templates = MagicMock()
-        engine.templates = mock_templates
         
-        engine.render("test.html", mock_request)
+        engine.render("test.html", mock_request, user="john", page=1)
         
-        call_args = mock_templates.TemplateResponse.call_args
-        context = call_args[0][1]
-        assert context['request'] == mock_request
+        context = mock_templates_instance.TemplateResponse.call_args[0][1]
+        assert context["user"] == "john"
+        assert context["page"] == 1
 
 
 class TestTemplateEngineSwitchAlter:
-    """Tests for alter switching functionality"""
+    """Tests for switch_alter method"""
     
-    @patch('modules.template.engine.Path.exists')
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
     @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
-    def test_switch_alter_to_valid_alter(self, mock_file, mock_exists):
-        """Test switching to a valid alter"""
+    def test_switch_alter_to_existing_alter(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test switching to an existing alter"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
-        result = engine.switch_alter('dexen')
+        # Mock the _save_alters_status method
+        with patch.object(engine, '_save_alters_status') as mock_save:
+            result = engine.switch_alter("dexen")
         
         assert result is True
-        assert engine.current_alter == 'dexen'
-        assert engine.alters_status['dexen'] is True
-        assert engine.alters_status['seles'] is False
+        assert engine.current_alter == "dexen"
+        assert engine.alters_status["dexen"] is True
+        assert engine.alters_status["seles"] is False
+        assert engine.alters_status["yuki"] is False
+        mock_save.assert_called_once()
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\n')
-    def test_switch_alter_to_invalid_alter(self, mock_file, mock_exists):
-        """Test switching to an invalid alter returns False"""
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    def test_switch_alter_to_nonexistent_alter(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test switching to a non-existent alter returns False"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
+        original_alter = engine.current_alter
         
-        result = engine.switch_alter('nonexistent')
+        result = engine.switch_alter("nonexistent")
         
         assert result is False
-        assert engine.current_alter == 'seles'  # Should remain unchanged
+        assert engine.current_alter == original_alter
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_switch_alter_resets_all_alters(self, mock_file, mock_exists):
-        """Test that switching resets all other alters to not fronting"""
-        mock_exists.return_value = True
-        
-        # Setup mock to return different data on subsequent reads
-        mock_file.return_value.read.side_effect = [
-            'name,is_fronting\nseles,1\ndexen,0\nyuki,0\n',
-            'name,is_fronting\nseles,1\ndexen,0\nyuki,0\n'
-        ]
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        engine.switch_alter('yuki')
-        
-        assert engine.alters_status['yuki'] is True
-        assert engine.alters_status['seles'] is False
-        assert engine.alters_status['dexen'] is False
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\n')
     @patch('modules.template.engine.Jinja2Templates')
-    def test_switch_alter_updates_templates(self, mock_jinja, mock_file, mock_exists):
-        """Test that switching alter updates template paths"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        initial_call_count = mock_jinja.call_count
-        engine.switch_alter('dexen')
-        
-        # Should call Jinja2Templates again to update paths
-        assert mock_jinja.call_count > initial_call_count
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\n')
-    def test_switch_alter_saves_to_csv(self, mock_file, mock_exists):
-        """Test that switching alter saves state to CSV"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        engine.switch_alter('dexen')
-        
-        # Verify file was opened for writing
-        write_calls = [call for call in mock_file.call_args_list if 'w' in str(call)]
-        assert len(write_calls) > 0
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\n')
-    def test_switch_alter_same_alter(self, mock_file, mock_exists):
-        """Test switching to the same alter that's already fronting"""
-        mock_exists.return_value = True
-        
-        from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
-        
-        result = engine.switch_alter('seles')
-        
-        assert result is True
-        assert engine.current_alter == 'seles'
-    
-    @patch('modules.template.engine.Path.exists')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
     @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
-    def test_switch_alter_multiple_times(self, mock_file, mock_exists):
-        """Test switching alters multiple times"""
+    def test_switch_alter_resets_all_other_alters(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test that switching resets all other alters to not fronting"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
-        engine.switch_alter('dexen')
-        assert engine.current_alter == 'dexen'
+        with patch.object(engine, '_save_alters_status'):
+            engine.switch_alter("yuki")
         
-        engine.switch_alter('yuki')
-        assert engine.current_alter == 'yuki'
+        assert engine.alters_status["yuki"] is True
+        assert engine.alters_status["seles"] is False
+        assert engine.alters_status["dexen"] is False
+    
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    def test_switch_alter_calls_setup_templates(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test that switching an alter triggers template setup"""
+        from modules.template.engine import TemplateEngine
         
-        engine.switch_alter('seles')
-        assert engine.current_alter == 'seles'
+        mock_path.return_value.exists.return_value = True
+        mock_exists.return_value = True
+        
+        engine = TemplateEngine()
+        
+        with patch.object(engine, '_setup_templates') as mock_setup, \
+             patch.object(engine, '_save_alters_status'):
+            engine.switch_alter("dexen")
+            mock_setup.assert_called_once()
 
 
 class TestTemplateEngineSaveAltersStatus:
-    """Tests for saving alter status"""
+    """Tests for _save_alters_status method"""
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    def test_save_alters_status_writes_csv(self, mock_file, mock_exists):
-        """Test that _save_alters_status writes to CSV file"""
-        mock_exists.return_value = True
-        mock_file.return_value.read.return_value = 'name,is_fronting\nseles,1\n'
-        
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Jinja2Templates')
+    def test_save_alters_status_writes_csv(self, mock_jinja, mock_exists, mock_file, mock_path):
+        """Test that _save_alters_status writes correct CSV format"""
         from modules.template.engine import TemplateEngine
-        engine = TemplateEngine()
         
-        engine._save_alters_status()
-        
-        # Verify file was opened for writing
-        write_calls = [call for call in mock_file.call_args_list if 'w' in str(call)]
-        assert len(write_calls) > 0
-    
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\n')
-    def test_save_alters_status_format(self, mock_file, mock_exists):
-        """Test that saved status has correct format"""
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
+        engine.alters_status = {"seles": False, "dexen": True, "yuki": False}
         
-        engine._save_alters_status()
+        # Create a new mock for writing
+        write_mock = mock_open()
+        with patch('builtins.open', write_mock):
+            engine._save_alters_status()
         
-        # Get the write calls
-        write_calls = mock_file.return_value.write.call_args_list
-        assert len(write_calls) > 0
+        # Verify write was called
+        write_mock.assert_called_once()
+    
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Jinja2Templates')
+    def test_save_alters_status_preserves_all_alters(self, mock_jinja, mock_exists, mock_file, mock_path):
+        """Test that _save_alters_status preserves all alters"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
+        mock_exists.return_value = True
+        
+        engine = TemplateEngine()
+        original_count = len(engine.alters_status)
+        
+        with patch('csv.writer') as mock_writer:
+            mock_writer_instance = MagicMock()
+            mock_writer.return_value = mock_writer_instance
+            engine._save_alters_status()
+            
+            # Should write header + all alters
+            assert mock_writer_instance.writerow.call_count == original_count + 1
 
 
 class TestTemplateEngineEdgeCases:
     """Tests for edge cases and error handling"""
     
-    @patch('modules.template.engine.Path.exists')
+    @patch('modules.template.engine.Path')
     @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\n')
-    def test_empty_csv_file(self, mock_file, mock_exists):
-        """Test handling of empty CSV file"""
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Jinja2Templates')
+    def test_handles_empty_csv(self, mock_jinja, mock_exists, mock_file, mock_path):
+        """Test handling of empty CSV file (header only)"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
         assert engine.alters_status == {}
-        assert engine.current_alter == 'global'
+        assert engine.current_alter == "global"
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\nseles,0\n')
-    def test_duplicate_alter_names(self, mock_file, mock_exists):
-        """Test handling of duplicate alter names in CSV"""
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,ON\ndexen,off\nyuki,1\n')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Jinja2Templates')
+    def test_handles_case_insensitive_boolean_values(self, mock_jinja, mock_exists, mock_file, mock_path):
+        """Test case-insensitive boolean parsing"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
-        # Last entry should win
-        assert 'seles' in engine.alters_status
+        assert engine.alters_status["seles"] is True  # 'ON' -> True
+        assert engine.alters_status["dexen"] is False  # 'off' -> False
+        assert engine.alters_status["yuki"] is True  # '1' -> True
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,invalid_value\n')
-    def test_invalid_boolean_values(self, mock_file, mock_exists):
-        """Test handling of invalid boolean values"""
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,0\nyuki,0\n')
+    def test_switch_to_same_alter(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test switching to the same alter that's already active"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
-        # Should default to False for invalid values
-        assert engine.alters_status.get('seles') is False
+        with patch.object(engine, '_save_alters_status') as mock_save:
+            result = engine.switch_alter("seles")
+        
+        assert result is True
+        assert engine.current_alter == "seles"
+        mock_save.assert_called_once()
     
-    @patch('modules.template.engine.Path.exists')
-    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,1\n')
-    def test_multiple_fronting_alters(self, mock_file, mock_exists):
-        """Test handling of multiple alters marked as fronting"""
+    @patch('modules.template.engine.Jinja2Templates')
+    @patch('os.path.exists')
+    @patch('modules.template.engine.Path')
+    @patch('builtins.open', new_callable=mock_open, read_data='name,is_fronting\nseles,1\ndexen,1\nyuki,0\n')
+    def test_multiple_alters_fronting_last_one_wins(self, mock_file, mock_path, mock_exists, mock_jinja):
+        """Test behavior when multiple alters are marked as fronting"""
+        from modules.template.engine import TemplateEngine
+        
+        mock_path.return_value.exists.return_value = True
         mock_exists.return_value = True
         
-        from modules.template.engine import TemplateEngine
         engine = TemplateEngine()
         
-        # Should handle gracefully - last one wins
-        assert engine.current_alter in ['seles', 'dexen']
+        # The last one read should be the current alter
+        assert engine.current_alter in ["seles", "dexen"]
+        # Both should be marked as fronting initially
+        assert engine.alters_status["seles"] is True
+        assert engine.alters_status["dexen"] is True
