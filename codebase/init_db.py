@@ -2,7 +2,7 @@
 Initialize the database with default values
 """
 from utils.db import init_db, SessionLocal, ModuleRegistry, Alter
-from modules.template.engine import TemplateEngine
+from modules.alter.engine import TemplateEngine
 
 def init_database():
     # Initialize database tables
@@ -32,7 +32,7 @@ def init_database():
 
         # Initialize default modules in registry
         modules_to_register = [
-            {"module_name": "template", "enabled": True, "route_prefix": "/template", "local_data_path": "modules/template/data"},
+            {"module_name": "alter", "enabled": True, "route_prefix": "/alter", "local_data_path": "modules/alter/data"},
             {"module_name": "admin", "enabled": True, "route_prefix": "/admin", "local_data_path": "modules/admin/data"},
             {"module_name": "forums", "enabled": True, "route_prefix": "/forums", "local_data_path": "modules/forums/data"},
             {"module_name": "rtc", "enabled": True, "route_prefix": "/rtc", "local_data_path": "modules/rtc/data"}

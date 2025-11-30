@@ -64,17 +64,17 @@ def resolve_template_path(template_name: str, module_name: Optional[str] = None)
 
     # Check for alter-specific templates (requires importing template engine)
     try:
-        from modules.template.engine import TemplateEngine
+        from modules.alter.engine import TemplateEngine
         template_engine = TemplateEngine()
 
         # Check alter-specific templates
         if template_engine.current_alter and template_engine.current_alter != "global":
-            alter_template_path = f"modules/template/templates/{template_engine.current_alter}/{template_name}"
+            alter_template_path = f"modules/alter/templates/{template_engine.current_alter}/{template_name}"
             if validate_path(alter_template_path) and os.path.exists(alter_template_path):
                 return alter_template_path
 
         # Then check global templates in the template module
-        global_template_path = f"modules/template/templates/global/{template_name}"
+        global_template_path = f"modules/alter/templates/global/{template_name}"
         if validate_path(global_template_path) and os.path.exists(global_template_path):
             return global_template_path
 

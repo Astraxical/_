@@ -16,8 +16,8 @@ class TemplateEngine:
     The engine maintains a mapping of which alter is currently 'fronting' (active),
     and provides template rendering that can vary based on the current alter.
     Templates are resolved with the following priority:
-    1. Current alter's templates (e.g., modules/template/templates/seles/index.html)
-    2. Global templates (e.g., modules/template/templates/global/index.html)
+    1. Current alter's templates (e.g., modules/alter/templates/seles/index.html)
+    2. Global templates (e.g., modules/alter/templates/global/index.html)
     3. Standard global templates (e.g., templates/index.html)
     """
     
@@ -29,7 +29,7 @@ class TemplateEngine:
         
     def _load_alters_status(self):
         """Load alter status from CSV file."""
-        alters_csv_path = Path("modules/template/data/alters.csv")
+        alters_csv_path = Path("modules/alter/data/alters.csv")
         
         # Create default CSV if it doesn't exist
         if not alters_csv_path.exists():
@@ -58,12 +58,12 @@ class TemplateEngine:
         
         # Add alter-specific templates if current alter isn't global
         if self.current_alter != "global":
-            alter_template_path = f"modules/template/templates/{self.current_alter}"
+            alter_template_path = f"modules/alter/templates/{self.current_alter}"
             if os.path.exists(alter_template_path):
                 template_paths.append(alter_template_path)
-        
+
         # Add global templates as fallback
-        global_template_path = "modules/template/templates/global"
+        global_template_path = "modules/alter/templates/global"
         if os.path.exists(global_template_path):
             template_paths.append(global_template_path)
             
@@ -122,7 +122,7 @@ class TemplateEngine:
     
     def _save_alters_status(self):
         """Save the current alter status to the CSV file."""
-        alters_csv_path = Path("modules/template/data/alters.csv")
+        alters_csv_path = Path("modules/alter/data/alters.csv")
         
         with open(alters_csv_path, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
