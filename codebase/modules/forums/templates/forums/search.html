@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - Forums{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="forum-container">
+    <div class="search-header">
+        <h1>Search Results</h1>
+        <form method="GET" action="/forums/search" class="search-form">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search threads and posts..." class="search-input">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    {% if query %}
+        <h2>Results for "{{ query }}"</h2>
+        
+        {% if results %}
+            <div class="search-results">
+                {% for thread in results %}
+                    <div class="list-item">
+                        <a href="/forums/threads/{{ thread.id }}">
+                            <h3 class="card-title">{{ thread.title }}</h3>
+                            <div class="card-subtitle">
+                                By {{ thread.author }} in {{ thread.category.name if thread.category else 'General' }}
+                                on {{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            </div>
+                            <p class="thread-snippet">{{ thread.content[:200] }}{% if thread.content|length > 200 %}...{% endif %}</p>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No results found for "{{ query }}". Try a different search term.</p>
+        {% endif %}
+    {% else %}
+        <p>Please enter a search term.</p>
+    {% endif %}
+</div>
+{% endblock %}

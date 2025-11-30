@@ -12,6 +12,16 @@
     <div class="thread-header">
         <h1>{{ thread.title }}</h1>
         <p class="thread-meta">By {{ thread.author }} on {{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        {% include 'partials/thread_tags.html' %}
+    </div>
+
+    <div class="form-section">
+        <form method="GET" action="/forums/search" class="search-form">
+            <div class="form-group">
+                <input type="text" name="q" placeholder="Search in this thread..." class="search-input">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
     </div>
 
     <div class="thread-content">

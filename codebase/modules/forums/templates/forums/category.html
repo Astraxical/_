@@ -17,6 +17,15 @@
         {% endif %}
     </div>
 
+    <div class="form-section">
+        <form method="GET" action="/forums/search" class="search-form">
+            <div class="form-group">
+                <input type="text" name="q" placeholder="Search in this category..." class="search-input">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
     <!-- Subcategories -->
     {% if categories %}
         <div class="subcategories-section">

@@ -145,3 +145,40 @@
 .list-item a:hover {
     color: #007bff;
 }
+
+/* Search components */
+.search-form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+}
+
+.search-form .btn {
+    border-radius: 0 4px 4px 0;
+    margin-left: -1px;
+}
+
+.thread-snippet {
+    margin-top: 10px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Tag components */
+.tag {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}

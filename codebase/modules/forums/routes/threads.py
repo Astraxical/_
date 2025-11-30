@@ -26,6 +26,7 @@ class ThreadCreate(BaseModel):
     content: str
     author: str
     category_id: Optional[int] = None
+    tag_names: str = ""  # Comma-separated tag names
 
 
 @router.get("/")
@@ -42,10 +43,17 @@ def get_threads(request: Request, db: Session = None):
 
     # Get all categories (including nested)
     categories = db.query(ForumCategory).filter(ForumCategory.parent_id == None).all()
-    threads = db.query(ForumThread).all()
+
+    # Get threads, with pinned threads first
+    pinned_threads = db.query(ForumThread).filter(ForumThread.is_pinned == True).all()
+    regular_threads = db.query(ForumThread).filter(ForumThread.is_pinned == False).all()
+
+    # Combine pinned threads first, then regular threads
+    all_threads = pinned_threads + regular_threads
+
     return templates.TemplateResponse("forums/index.html", {
         "request": request,
-        "threads": threads,
+        "threads": all_threads,
         "categories": categories
     })
 
@@ -87,6 +95,54 @@ def get_replies_for_post(post_id, db):
     for reply in replies:
         reply.replies = get_replies_for_post(reply.id, db)
     return replies
+
+
+@router.get("/search")
+def search_threads(request: Request, q: str = None, db: Session = None):
+    """
+    Search for threads and posts based on a query string.
+
+    Args:
+        q: Search query string
+
+    Returns:
+        Search results matching the query
+    """
+    if not q:
+        return templates.TemplateResponse("forums/search.html", {
+            "request": request,
+            "results": [],
+            "query": ""
+        })
+
+    if db is None:
+        from utils.db import get_db
+        db = next(get_db())
+
+    # Search in thread titles and content
+    thread_results = db.query(ForumThread).filter(
+        ForumThread.title.contains(q) | ForumThread.content.contains(q)
+    ).all()
+
+    # Search in post content
+    post_results = db.query(ForumPost).filter(
+        ForumPost.content.contains(q)
+    ).all()
+
+    # Get the threads that contain the matching posts
+    post_thread_ids = {post.thread_id for post in post_results}
+    post_threads = db.query(ForumThread).filter(
+        ForumThread.id.in_(list(post_thread_ids))
+    ).all()
+
+    # Combine results
+    all_threads = list(set(thread_results + post_threads))
+
+    return templates.TemplateResponse("forums/search.html", {
+        "request": request,
+        "results": all_threads,
+        "query": q
+    })
 
 
 @router.get("/{thread_id}")
@@ -147,6 +203,18 @@ def create_thread(thread: ThreadCreate, db: Session = None):
         author=thread.author,
         category_id=thread.category_id
     )
+
+    # Process tags
+    if thread.tag_names:
+        tag_names = [name.strip() for name in thread.tag_names.split(',') if name.strip()]
+        for tag_name in tag_names:
+            # Find or create the tag
+            tag = db.query(ForumTag).filter(ForumTag.name == tag_name).first()
+            if not tag:
+                tag = ForumTag(name=tag_name)
+                db.add(tag)
+            db_thread.tags.append(tag)
+
     db.add(db_thread)
     db.commit()
     db.refresh(db_thread)
