@@ -6,9 +6,9 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import Optional
 import os
-import sys
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
+
 from ...utils.db import get_db
 from ..models import ForumThread, ForumPost, ForumCategory
 

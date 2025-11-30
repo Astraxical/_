@@ -4,7 +4,9 @@ Forums Models
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from utils.db import Base
+
+# Use relative import from the codebase directory
+from ...utils.db import Base
 
 
 class ForumCategory(Base):
