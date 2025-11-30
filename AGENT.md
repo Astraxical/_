@@ -45,6 +45,14 @@ For example, to make ai-1 track the dev branch:
 git branch --set-upstream-to=origin/dev ai-1
 ```
 
+### Pull Script for Dev Branch
+A helper script is available to pull changes specifically from the dev branch:
+```
+./pull.sh
+```
+
+This script ensures you're on the dev branch before pulling and provides appropriate error messages if run from the wrong location.
+
 ### Checking Current Worktree
 Before starting work, always verify which worktree and branch you're in:
 ```
@@ -129,3 +137,4 @@ git merge --abort
 5. Keep a clean, understandable commit history
 6. Verify your current worktree/branch before starting work
 7. Use `git worktree list` to see all active worktrees
+8. Use `./pull.sh` script when pulling from dev branch for consistency
