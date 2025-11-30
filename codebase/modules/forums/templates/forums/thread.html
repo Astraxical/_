@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ thread.title }} - Forums{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="thread-container">
+    <div class="thread-header">
+        <h1>{{ thread.title }}</h1>
+        <p class="thread-meta">By {{ thread.author }} on {{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+
+    <div class="thread-content">
+        <p>{{ thread.content }}</p>
+    </div>
+
+    <div class="posts-section">
+        <h2>Replies ({{ posts|length }})</h2>
+
+        {% if posts %}
+            {% for post in posts %}
+            <div class="post">
+                <div class="post-header">
+                    <strong>{{ post.author }}</strong>
+                    <span class="post-date">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+                <div class="post-content">
+                    <p>{{ post.content }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No replies yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+
+    <div class="create-post-form">
+        <h3>Add a Reply</h3>
+        <form method="POST" action="/forums/posts">
+            <input type="hidden" name="thread_id" value="{{ thread.id }}">
+            <div class="form-group">
+                <label for="author">Your Name:</label>
+                <input type="text" id="author" name="author" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Your Reply:</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+            <button type="submit" class="btn">Post Reply</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

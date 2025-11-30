@@ -2,22 +2,41 @@
 
 {% block title %}Forums - Community Discussion{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="forums-container">
-    <h1>Community Forums</h1>
-    <p>Join the discussion on various topics.</p>
-    
-    <div class="forums-list">
-        <h2>Available Categories</h2>
-        <ul>
-            <li><a href="/forums/general">General Discussion</a></li>
-            <li><a href="/forums/tech">Technology</a></li>
-            <li><a href="/forums/offtopic">Off Topic</a></li>
-        </ul>
+    <div class="forums-header">
+        <h1>Community Forums</h1>
+        <p>Join the discussion on various topics.</p>
     </div>
-    
-    <div class="create-thread">
-        <a href="/forums/new" class="btn">Create New Thread</a>
+
+    <div class="create-thread-section">
+        <a href="/forums/new" class="btn btn-primary">Create New Thread</a>
+    </div>
+
+    <div class="forums-list">
+        <h2>Active Discussions</h2>
+        {% if threads %}
+        <ul class="thread-list">
+            {% for thread in threads %}
+            <li class="thread-item">
+                <a href="/forums/threads/{{ thread.id }}">
+                    <h3>{{ thread.title }}</h3>
+                    <div class="thread-meta">
+                        <span class="author">By {{ thread.author }}</span>
+                        <span class="date">{{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No threads yet. Be the first to start a discussion!</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

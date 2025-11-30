@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Thread - Forums{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="create-thread-container">
+    <h1>Create New Thread</h1>
+
+    <form method="POST" action="/forums/threads">
+        <div class="form-group">
+            <label for="title">Thread Title:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Your Name:</label>
+            <input type="text" id="author" name="author" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content:</label>
+            <textarea id="content" name="content" rows="10" required></textarea>
+        </div>
+
+        <button type="submit" class="btn">Create Thread</button>
+    </form>
+</div>
+{% endblock %}
