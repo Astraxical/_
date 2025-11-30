@@ -10,7 +10,18 @@ router = APIRouter(prefix="/admin")
 
 
 def get_module_info():
-    """Return module-specific information for registry"""
+    """
+    Provide module metadata used by the component registry.
+    
+    The returned dictionary describes the module's identifier, the route patterns it exposes, and the local filesystem path for module-specific data.
+    
+    Returns:
+        dict: {
+            "name": module name (str),
+            "routes": list of route patterns exposed by the module (list[str]),
+            "local_data_path": relative path to the module's local data (str)
+        }
+    """
     return {
         "name": "admin",
         "routes": ["/admin/*"],

@@ -54,4 +54,9 @@ class AuditLog(Base):
 
 # Create all tables
 def init_db():
+    """
+    Create all database tables defined on the ORM Base.
+    
+    This ensures the database schema for all mapped models is created in the configured engine if the tables do not already exist.
+    """
     Base.metadata.create_all(bind=engine)
