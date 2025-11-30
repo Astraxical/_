@@ -1,0 +1,28 @@
+/*
+ * Seles-specific CSS
+ */
+ 
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #f0f0f0;
+}
+
+header {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+nav a {
+    color: #a0d2eb;
+}
+
+nav a:hover {
+    color: #764ba2;
+}
+
+.alter-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #a0d2eb;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 5px 0;
+}
