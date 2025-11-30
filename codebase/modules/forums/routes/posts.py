@@ -82,14 +82,15 @@ def get_post(request: Request, post_id: int, db: Session = None):
 
 
 @router.post("/")
-async def create_post(content: str = Form(...), thread_id: int = Form(...), author: str = Form(...), db: Session = None):
+async def create_post(content: str = Form(...), thread_id: int = Form(...), author: str = Form(...), parent_post_id: int = Form(None), db: Session = None):
     """
-    Create a new forum post.
+    Create a new forum post or reply.
 
     Args:
         content: Content of the post
         thread_id: ID of the thread to post in
         author: Author of the post
+        parent_post_id: ID of the parent post if this is a reply (optional)
 
     Returns:
         Redirect to the thread page
@@ -103,10 +104,17 @@ async def create_post(content: str = Form(...), thread_id: int = Form(...), auth
     if not thread:
         raise HTTPException(status_code=404, detail="Thread not found")
 
+    # If this is a reply, verify the parent post exists
+    if parent_post_id:
+        parent_post = db.query(ForumPost).filter(ForumPost.id == parent_post_id).first()
+        if not parent_post:
+            raise HTTPException(status_code=404, detail="Parent post not found")
+
     db_post = ForumPost(
         content=content,
         thread_id=thread_id,
-        author=author
+        author=author,
+        parent_post_id=parent_post_id
     )
     db.add(db_post)
     db.commit()

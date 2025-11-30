@@ -35,4 +35,40 @@
         {% include 'partials/create_post_form.html' %}
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle reply button clicks
+    document.querySelectorAll('.reply-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const formContainer = document.getElementById('reply-form-' + postId);
+
+            // Hide all other reply forms
+            document.querySelectorAll('.reply-form-container').forEach(container => {
+                container.style.display = 'none';
+            });
+
+            // Show this reply form
+            formContainer.style.display = 'block';
+
+            // Update the parent_post_id in the form
+            const form = formContainer.querySelector('form');
+            const hiddenInput = form.querySelector('input[name="parent_post_id"]');
+            hiddenInput.value = postId;
+
+            // Scroll to the form
+            formContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Handle cancel reply button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('cancel-reply')) {
+            const formContainer = e.target.closest('.reply-form-container');
+            formContainer.style.display = 'none';
+        }
+    });
+});
+</script>
 {% endblock %}

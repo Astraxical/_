@@ -40,8 +40,53 @@ def get_threads(request: Request, db: Session = None):
         from utils.db import get_db
         db = next(get_db())
 
+    # Get all categories (including nested)
+    categories = db.query(ForumCategory).filter(ForumCategory.parent_id == None).all()
     threads = db.query(ForumThread).all()
-    return templates.TemplateResponse("forums/index.html", {"request": request, "threads": threads})
+    return templates.TemplateResponse("forums/index.html", {
+        "request": request,
+        "threads": threads,
+        "categories": categories
+    })
+
+
+@router.get("/categories/{category_id}")
+def get_threads_by_category(request: Request, category_id: int, db: Session = None):
+    """
+    Get all forum threads in a specific category.
+
+    Args:
+        category_id: ID of the category to filter by
+
+    Returns:
+        List of threads in the category
+    """
+    if db is None:
+        from utils.db import get_db
+        db = next(get_db())
+
+    category = db.query(ForumCategory).filter(ForumCategory.id == category_id).first()
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+
+    threads = db.query(ForumThread).filter(ForumThread.category_id == category_id).all()
+    categories = db.query(ForumCategory).filter(ForumCategory.parent_id == category_id).all()
+
+    return templates.TemplateResponse("forums/category.html", {
+        "request": request,
+        "threads": threads,
+        "category": category,
+        "categories": categories,
+        "parent_category": category.parent
+    })
+
+
+def get_replies_for_post(post_id, db):
+    """Recursively get all replies for a post."""
+    replies = db.query(ForumPost).filter(ForumPost.parent_post_id == post_id).all()
+    for reply in replies:
+        reply.replies = get_replies_for_post(reply.id, db)
+    return replies
 
 
 @router.get("/{thread_id}")
@@ -63,7 +108,16 @@ def get_thread(request: Request, thread_id: int, db: Session = None):
     if not thread:
         raise HTTPException(status_code=404, detail="Thread not found")
 
-    posts = db.query(ForumPost).filter(ForumPost.thread_id == thread_id).all()
+    # Get top-level posts (posts without a parent) and their replies
+    posts = db.query(ForumPost).filter(
+        ForumPost.thread_id == thread_id,
+        ForumPost.parent_post_id == None
+    ).all()
+
+    # Include replies for each post
+    for post in posts:
+        post.replies = get_replies_for_post(post.id, db)
+
     return templates.TemplateResponse("forums/thread.html", {
         "request": request,
         "thread": thread,

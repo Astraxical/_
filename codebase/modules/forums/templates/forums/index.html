@@ -18,8 +18,28 @@
         <a href="/forums/new" class="btn btn-primary">Create New Thread</a>
     </div>
 
+    <!-- Categories section -->
+    <div class="categories-section">
+        <h2>Categories</h2>
+        {% if categories %}
+        <div class="categories-container">
+            {% for category in categories %}
+            <div class="list-item">
+                <a href="/forums/categories/{{ category.id }}">
+                    <h3 class="card-title">{{ category.name }}</h3>
+                    <div class="card-subtitle">{{ category.description }}</div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No categories available yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Latest threads section -->
     <div class="forums-list">
-        <h2>Active Discussions</h2>
+        <h2>Latest Discussions</h2>
         {% if threads %}
         <div class="threads-container">
             {% for thread in threads %}

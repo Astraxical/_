@@ -11,6 +11,8 @@
 <div class="create-thread-container">
     <h1>Create New Thread</h1>
 
-    {% include 'partials/create_thread_form.html' %}
+    {% with categories=categories %}
+        {% include 'partials/create_thread_form.html' %}
+    {% endwith %}
 </div>
 {% endblock %}

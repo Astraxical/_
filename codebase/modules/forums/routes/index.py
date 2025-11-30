@@ -36,8 +36,17 @@ def forums_index(request: Request, db: Session = None):
 
 
 @router.get("/new")
-def new_thread_form(request: Request):
-    return templates.TemplateResponse("forums/new_thread.html", {"request": request})
+def new_thread_form(request: Request, category_id: int = None, db: Session = None):
+    if db is None:
+        from utils.db import get_db
+        db = next(get_db())
+
+    categories = db.query(ForumCategory).all()
+    return templates.TemplateResponse("forums/new_thread.html", {
+        "request": request,
+        "categories": categories,
+        "selected_category_id": category_id
+    })
 
 
 @router.post("/threads")
@@ -49,7 +58,8 @@ def create_thread(thread: ThreadCreate, db: Session = None):
     db_thread = ForumThread(
         title=thread.title,
         content=thread.content,
-        author=thread.author
+        author=thread.author,
+        category_id=thread.category_id
     )
     db.add(db_thread)
     db.commit()
