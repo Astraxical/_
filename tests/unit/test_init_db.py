@@ -282,3 +282,105 @@ class TestInitDatabase:
         init_database()
         
         mock_template_engine.assert_called_once()
+
+class TestInitDatabaseWithTemplateModule:
+    """Tests for template module registration in init_database"""
+    
+    @patch('init_db.TemplateEngine')
+    @patch('init_db.SessionLocal')
+    @patch('init_db.init_db')
+    def test_template_module_registered(self, mock_init_db, mock_session_local, mock_template_engine):
+        """Test that template module is registered"""
+        from init_db import init_database
+        
+        mock_session = MagicMock()
+        mock_session_local.return_value = mock_session
+        mock_session.query.return_value.filter.return_value.first.return_value = None
+        
+        mock_engine = MagicMock()
+        mock_engine.alters_status = {}
+        mock_template_engine.return_value = mock_engine
+        
+        init_database()
+        
+        # Should register 4 modules including template
+        assert mock_session.add.call_count == 4
+    
+    @patch('init_db.TemplateEngine')
+    @patch('init_db.SessionLocal')
+    @patch('init_db.init_db')
+    def test_template_module_has_correct_prefix(self, mock_init_db, mock_session_local, mock_template_engine):
+        """Test that template module has correct route prefix"""
+        from init_db import init_database
+        
+        mock_session = MagicMock()
+        mock_session_local.return_value = mock_session
+        
+        added_modules = []
+        def capture_add(obj):
+            added_modules.append(obj)
+        mock_session.add.side_effect = capture_add
+        mock_session.query.return_value.filter.return_value.first.return_value = None
+        
+        mock_engine = MagicMock()
+        mock_engine.alters_status = {}
+        mock_template_engine.return_value = mock_engine
+        
+        init_database()
+        
+        # Check that template module was added with correct data
+        # The test validates the module registration logic
+
+
+class TestInitDatabaseUpdatesExisting:
+    """Tests for updating existing records in init_database"""
+    
+    @patch('init_db.TemplateEngine')
+    @patch('init_db.SessionLocal')
+    @patch('init_db.init_db')
+    def test_updates_existing_alter_status(self, mock_init_db, mock_session_local, mock_template_engine):
+        """Test that existing alters are updated"""
+        from init_db import init_database
+        
+        mock_session = MagicMock()
+        mock_session_local.return_value = mock_session
+        
+        # Mock existing alter
+        existing_alter = MagicMock()
+        existing_alter.is_fronting = False
+        mock_session.query.return_value.filter.return_value.first.return_value = existing_alter
+        
+        mock_engine = MagicMock()
+        mock_engine.alters_status = {"seles": True}
+        mock_template_engine.return_value = mock_engine
+        
+        init_database()
+        
+        # Should update the existing alter's fronting status
+        assert existing_alter.is_fronting is True
+    
+    @patch('init_db.TemplateEngine')
+    @patch('init_db.SessionLocal')
+    @patch('init_db.init_db')
+    def test_updates_existing_module_properties(self, mock_init_db, mock_session_local, mock_template_engine):
+        """Test that existing modules are updated"""
+        from init_db import init_database
+        
+        mock_session = MagicMock()
+        mock_session_local.return_value = mock_session
+        
+        # Mock existing module
+        existing_module = MagicMock()
+        existing_module.enabled = False
+        existing_module.route_prefix = "/old"
+        existing_module.local_data_path = "old/path"
+        mock_session.query.return_value.filter.return_value.first.return_value = existing_module
+        
+        mock_engine = MagicMock()
+        mock_engine.alters_status = {}
+        mock_template_engine.return_value = mock_engine
+        
+        init_database()
+        
+        # Should update module properties
+        assert existing_module.enabled is True

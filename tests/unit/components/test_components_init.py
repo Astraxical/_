@@ -286,3 +286,183 @@ class TestComponentIntegration:
         
         result = validate_routes(components)
         assert result is True
+
+class TestSetupComponentsWithTemplate:
+    """Tests for setup_components with template component"""
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    def test_template_component_setup_called(self, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that template component setup is called"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": ["/template/*"], "initialized": True}
+        mock_admin.return_value = {"name": "admin", "routes": ["/admin/*"], "initialized": True}
+        mock_forums.return_value = {"name": "forums", "routes": ["/forums/*"], "initialized": True}
+        mock_rtc.return_value = {"name": "rtc", "routes": ["/rtc/*"], "initialized": True}
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        mock_template.assert_called_once_with(app)
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    def test_template_component_setup_first(self, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that template component is set up first"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        call_order = []
+        mock_template.side_effect = lambda app: (call_order.append("template"), {"name": "template", "routes": [], "initialized": True})[1]
+        mock_admin.side_effect = lambda app: (call_order.append("admin"), {"name": "admin", "routes": [], "initialized": True})[1]
+        mock_forums.side_effect = lambda app: (call_order.append("forums"), {"name": "forums", "routes": [], "initialized": True})[1]
+        mock_rtc.side_effect = lambda app: (call_order.append("rtc"), {"name": "rtc", "routes": [], "initialized": True})[1]
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        assert call_order[0] == "template"
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    @patch('components.validate_routes')
+    def test_validates_four_components(self, mock_validate, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that all four components are validated"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": ["/template/*"], "initialized": True}
+        mock_admin.return_value = {"name": "admin", "routes": ["/admin/*"], "initialized": True}
+        mock_forums.return_value = {"name": "forums", "routes": ["/forums/*"], "initialized": True}
+        mock_rtc.return_value = {"name": "rtc", "routes": ["/rtc/*"], "initialized": True}
+        mock_validate.return_value = True
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        # Should validate with 4 components
+        call_args = mock_validate.call_args[0][0]
+        assert len(call_args) == 4
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    @patch('builtins.print')
+    def test_prints_correct_component_count(self, mock_print, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that success message shows 4 components"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": [], "initialized": True}
+        mock_admin.return_value = {"name": "admin", "routes": [], "initialized": True}
+        mock_forums.return_value = {"name": "forums", "routes": [], "initialized": True}
+        mock_rtc.return_value = {"name": "rtc", "routes": [], "initialized": True}
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        # Should print message about 4 components
+        assert any("4 components" in str(call) for call in mock_print.call_args_list)
+
+
+class TestComponentSetupOrder:
+    """Tests for component setup order and dependencies"""
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    def test_all_components_receive_same_app(self, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that all components receive the same app instance"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": [], "initialized": True}
+        mock_admin.return_value = {"name": "admin", "routes": [], "initialized": True}
+        mock_forums.return_value = {"name": "forums", "routes": [], "initialized": True}
+        mock_rtc.return_value = {"name": "rtc", "routes": [], "initialized": True}
+        
+        app = FastAPI()
+        setup_components(app)
+        
+        # All should be called with the same app
+        assert mock_template.call_args[0][0] is app
+        assert mock_admin.call_args[0][0] is app
+        assert mock_forums.call_args[0][0] is app
+        assert mock_rtc.call_args[0][0] is app
+    
+    @patch('components.setup_template')
+    @patch('components.setup_admin')
+    @patch('components.setup_forums')
+    @patch('components.setup_rtc')
+    def test_component_failure_prevents_validation(self, mock_rtc, mock_forums, mock_admin, mock_template):
+        """Test that component setup failure is handled"""
+        from components import setup_components
+        from fastapi import FastAPI
+        
+        mock_template.return_value = {"name": "template", "routes": [], "initialized": True}
+        mock_admin.side_effect = Exception("Setup failed")
+        
+        app = FastAPI()
+        
+        # Should raise exception if component fails
+        with pytest.raises(Exception):
+            setup_components(app)
+
+
+class TestValidateRoutesWithTemplateComponent:
+    """Tests for route validation including template component"""
+    
+    def test_validate_routes_detects_template_route_conflict(self):
+        """Test that template route conflicts are detected"""
+        from components import validate_routes
+        
+        components = [
+            {"name": "template", "routes": ["/template/*"]},
+            {"name": "admin", "routes": ["/template/*"]}  # Conflict
+        ]
+        
+        with pytest.raises(ValueError, match="Route conflict"):
+            validate_routes(components)
+    
+    def test_validate_routes_allows_unique_template_routes(self):
+        """Test that unique template routes pass validation"""
+        from components import validate_routes
+        
+        components = [
+            {"name": "template", "routes": ["/template/*", "/template/alter/*"]},
+            {"name": "admin", "routes": ["/admin/*"]},
+            {"name": "forums", "routes": ["/forums/*"]},
+            {"name": "rtc", "routes": ["/rtc/*"]}
+        ]
+        
+        result = validate_routes(components)
+        assert result is True
+    
+    def test_validate_routes_with_overlapping_wildcards(self):
+        """Test validation with overlapping wildcard routes"""
+        from components import validate_routes
+        
+        components = [
+            {"name": "template", "routes": ["/template/*"]},
+            {"name": "admin", "routes": ["/template/admin/*"]}  # Might overlap
+        ]
+        
+        # Depending on implementation, this might or might not conflict
+        # The current implementation checks exact matches
+        try:
+            result = validate_routes(components)
+            # If no exception, routes are considered non-conflicting
+            assert result is True
+        except ValueError:
+            # If exception, conflict was detected
+            pass

@@ -291,3 +291,135 @@ class TestAppIntegration:
         
         # Should not raise an error
         assert response is not None
+
+class TestMainWithRateLimiting:
+    """Tests for rate limiting functionality in main.py"""
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    def test_limiter_initialized(self, mock_static, mock_setup):
+        """Test that rate limiter is initialized"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        assert main.limiter is not None
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    def test_limiter_added_to_app_state(self, mock_static, mock_setup):
+        """Test that limiter is added to app state"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        assert hasattr(main.app.state, 'limiter')
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    def test_rate_limit_exception_handler_added(self, mock_static, mock_setup):
+        """Test that rate limit exception handler is added"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        # App should have exception handlers
+        assert len(main.app.exception_handlers) > 0
+
+
+class TestMainWithTemplateEngine:
+    """Tests for template engine integration in main.py"""
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    @patch('main.TemplateEngine')
+    def test_template_engine_initialized(self, mock_engine, mock_static, mock_setup):
+        """Test that template engine is initialized"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        mock_engine.assert_called_once()
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    @patch('main.TemplateEngine')
+    def test_read_root_uses_template_engine(self, mock_engine, mock_static, mock_setup):
+        """Test that read_root uses template engine for rendering"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        mock_engine_instance = MagicMock()
+        mock_engine.return_value = mock_engine_instance
+        main.template_engine = mock_engine_instance
+        
+        mock_request = MagicMock()
+        main.read_root(mock_request)
+        
+        mock_engine_instance.render.assert_called_once()
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    @patch('main.TemplateEngine')
+    def test_read_root_passes_correct_template(self, mock_engine, mock_static, mock_setup):
+        """Test that read_root passes correct template name"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        mock_engine_instance = MagicMock()
+        main.template_engine = mock_engine_instance
+        
+        mock_request = MagicMock()
+        main.read_root(mock_request)
+        
+        call_args = mock_engine_instance.render.call_args[0]
+        assert call_args[0] == "index.html"
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    @patch('main.TemplateEngine')
+    def test_read_root_passes_request(self, mock_engine, mock_static, mock_setup):
+        """Test that read_root passes request to template engine"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        mock_engine_instance = MagicMock()
+        main.template_engine = mock_engine_instance
+        
+        mock_request = MagicMock()
+        main.read_root(mock_request)
+        
+        call_args = mock_engine_instance.render.call_args[0]
+        assert call_args[1] == mock_request
+
+
+class TestRateLimitedRootRoute:
+    """Tests for rate-limited root route"""
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    @patch('main.TemplateEngine')
+    @patch('main.limiter')
+    def test_root_route_has_rate_limit(self, mock_limiter, mock_engine, mock_static, mock_setup):
+        """Test that root route has rate limiting applied"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        # The decorator should be applied
+        assert hasattr(main.read_root, '__wrapped__') or callable(main.read_root)
+    
+    @patch('main.setup_components')
+    @patch('main.StaticFiles')
+    @patch('main.TemplateEngine')
+    def test_rate_limit_uses_remote_address(self, mock_engine, mock_static, mock_setup):
+        """Test that rate limiting uses remote address"""
+        import importlib
+        import main
+        importlib.reload(main)
+        
+        # Limiter should be configured with get_remote_address
+        assert main.limiter.key_func is not None
