@@ -25,31 +25,26 @@ def setup_components(app: FastAPI):
     Initialize and setup all components
     """
     # Import components - following the integration chain pattern
-    from components.template_comp import setup_template
     from components.admin_comp import setup_admin
     from components.forums_comp import setup_forums
     from components.rtc_comp import setup_rtc
-    
+
     # Setup each component
     components_info = []
-    
-    # Template component (foundational)
-    template_info = setup_template(app)
-    components_info.append(template_info)
-    
+
     # Admin component
     admin_info = setup_admin(app)
     components_info.append(admin_info)
-    
+
     # Forums component
     forums_info = setup_forums(app)
     components_info.append(forums_info)
-    
+
     # RTC component
     rtc_info = setup_rtc(app)
     components_info.append(rtc_info)
-    
+
     # Validate all routes to prevent conflicts
     validate_routes(components_info)
-    
+
     print(f"Successfully set up {len(components_info)} components")

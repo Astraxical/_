@@ -7,7 +7,7 @@ VPS_HOST = os.getenv("VPS_HOST", "localhost")
 PORT = int(os.getenv("PORT", "8000"))
 
 # Database settings
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/app.db")
 REGISTRY_DB_PATH = os.getenv("REGISTRY_DB_PATH", "data/registry.db")
 APP_DB_PATH = os.getenv("APP_DB_PATH", "data/app.db")
 

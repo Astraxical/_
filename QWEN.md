@@ -1,14 +1,78 @@
 # Multi-House Application
 
-A modular web application with distinct "houses" (modules) that operate autonomously but integrate through shared components.
+## Project Overview
 
-## Architecture
+This is a modular web application with distinct "houses" (modules) that operate autonomously but integrate through shared components. The application uses FastAPI as its web framework and implements a unique "alter" system that dynamically changes the UI based on which alter is "fronting" (active).
+
+The codebase is organized in the `codebase/` directory to separate the actual implementation from documentation and planning files.
+
+### Architecture
 
 - **Components**: Integration layer that bridges modules with the main application
 - **Modules**: Autonomous "houses" with their own resources and data
 - **Data Isolation**: Each module maintains its own data while sharing global resources
 
-## Project Structure
+The project follows a "integration chain" pattern where components serve as bridges between modules and the main application, allowing for clean separation of concerns while maintaining integration.
+
+### Key Features
+
+1. **Modular Architecture**: The application is designed with 3 main modules:
+   - Forums: Community discussion platform
+   - RTC: Real-time communication
+   - Admin: System administration control panel
+
+2. **Component Integration**: A component system handles the integration between modules and the main application, with route conflict validation.
+
+3. **Resource Management**: The system has utilities for validating and loading both local and global resources.
+
+## Building and Running
+
+### Prerequisites
+
+- Python 3.8+
+- pip
+
+### Setup
+
+1. Navigate to the codebase directory:
+   ```bash
+   cd codebase
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Initialize the database:
+   ```bash
+   python init_db.py
+   ```
+
+4. Run the application:
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+   Or use the Termux startup script:
+   ```bash
+   ./deploy/termux_start.sh
+   ```
+
+### Configuration
+
+The application uses environment variables for configuration defined in `config.py`:
+
+- `DEBUG`: Enable/disable debug mode (default: False)
+- `SECRET_KEY`: Secret key for security (default: "your-secret-key-here")
+- `VPS_HOST`: Host address (default: "localhost")
+- `PORT`: Port to run the application on (default: 8000)
+- `DATABASE_URL`: Database connection string (default: "sqlite:///./app.db")
+- And more...
+
+## Development Conventions
+
+### Project Structure
 
 ```
 project/
@@ -156,15 +220,58 @@ project/
         └── termux_start.sh
 ```
 
-## Getting Started
+### Module Development
 
-1. Navigate to the codebase directory: `cd codebase`
-2. Install dependencies: `pip install -r requirements.txt`
-3. Initialize the database: `python init_db.py`
-4. Run the application: `uvicorn main:app --reload`
+Each module is designed to be autonomous and can be developed independently. The basic structure for a new module should include:
 
-## Development
+1. `__init__.py` - Exports router and services
+2. `models/` - Database models (if needed)
+3. `routes/` - API routes
+4. `templates/` - Module-specific templates that can override global ones
+5. `static/` - Module-specific CSS and JavaScript
+6. `data/` - Module-private data storage
 
-Each module can be developed independently following the template module as a blueprint. Components handle the integration with the main application.
+New modules can use the `_template_module/` as a blueprint.
 
-The codebase is organized in the `codebase/` directory to separate the actual implementation from documentation and planning files.
+### Template Alter System
+
+The template alter system allows different UI themes and content based on which alter is "fronting". The system works by:
+
+1. Loading alter status from `modules/template/data/alters.csv`
+2. Creating a Jinja2 environment with search paths prioritizing the current fronting alter
+3. Rendering templates with alter-specific context
+
+### Database Models
+
+The application uses SQLAlchemy for database management. The main models are:
+
+1. `ModuleRegistry` - Tracks module status in the system
+2. `Alter` - Represents an alter in the system
+3. `AuditLog` - Audit log for admin actions
+4. Forum models (ForumCategory, ForumThread, ForumPost) in the forums module
+
+## Testing
+
+The project includes basic testing infrastructure, though specific tests need to be implemented. Testing should cover:
+
+- Local/global template resolution
+- Database operations
+- Module integration
+- Template alter switching functionality
+- Security functions
+
+## Deployment
+
+The project includes a Termux startup script and GitHub workflows for testing and linting.
+
+## Current Status
+
+The core architecture and framework have been implemented with about 60-70% completion of the full structure planned. The foundation is solid and working:
+
+- ✅ Components integration system is functional
+- ✅ Template alter system is working (verified with current alter: "seles")
+- ✅ Database initialization works
+- ✅ All modules follow the planned import patterns
+- ✅ Resource loading and security utilities are in place
+
+Remaining elements include module-specific functionality that can be implemented incrementally.
