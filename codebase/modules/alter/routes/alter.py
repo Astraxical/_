@@ -1,11 +1,11 @@
 """
-Routes for the template module - handles alter switching and related operations
+Routes for the alter module - handles alter switching and related operations
 """
 from fastapi import APIRouter, Request
 from modules.alter.engine import TemplateEngine
 
 
-# Create router for template module
+# Create router for alter module
 router = APIRouter()
 
 # Global instance of the template engine
