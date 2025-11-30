@@ -32,12 +32,12 @@ def validate_routes(components: List[Dict[str, Any]]) -> bool:
 def setup_components(app: FastAPI):
     """
     Register and initialize application components on the provided FastAPI app.
-    
+
     This sets up the admin, forums, and RTC components, collects each component's metadata, and validates their routes to detect conflicts before runtime.
-    
+
     Parameters:
         app (FastAPI): The FastAPI application instance to register components and routes on.
-    
+
     Raises:
         ValueError: If a route conflict is detected across components.
     """
