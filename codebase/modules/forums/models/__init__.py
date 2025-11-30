@@ -5,8 +5,18 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Tabl
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-# Use relative import from the codebase directory
-from ...utils.db import Base
+# For the project structure, we need to use relative imports appropriately
+# When run from the main directory, this will work with PYTHONPATH=codebase
+import sys
+import os
+
+# Add the codebase directory to sys.path if not already present
+codebase_dir = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+abs_codebase_dir = os.path.abspath(codebase_dir)
+if abs_codebase_dir not in sys.path:
+    sys.path.insert(0, abs_codebase_dir)
+
+from utils.db import Base
 
 # Association table for many-to-many relationship between threads and tags
 thread_tags = Table('thread_tags', Base.metadata,

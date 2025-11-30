@@ -9,7 +9,17 @@ import os
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
-from ...utils.db import get_db
+# For the project structure, we need to ensure the codebase directory is in the path
+import sys
+import os
+
+# Add the codebase directory to sys.path if not already present
+codebase_dir = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+abs_codebase_dir = os.path.abspath(codebase_dir)
+if abs_codebase_dir not in sys.path:
+    sys.path.insert(0, abs_codebase_dir)
+
+from utils.db import get_db
 from ..models import ForumThread, ForumPost, ForumCategory
 
 
