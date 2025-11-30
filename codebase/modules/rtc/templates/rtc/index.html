@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}RTC - Real-Time Communication{% endblock %}
+
+{% block content %}
+<div class="rtc-container">
+    <h1>Real-Time Communication</h1>
+    <p>Connect with others in real-time.</p>
+    
+    <div class="rtc-options">
+        <h2>Communication Options</h2>
+        <ul>
+            <li><a href="/rtc/chat">Text Chat</a></li>
+            <li><a href="/rtc/video">Video Call</a></li>
+            <li><a href="/rtc/voice">Voice Call</a></li>
+        </ul>
+    </div>
+    
+    <div class="rtc-status">
+        <p>Connection Status: <span id="connection-status">Disconnected</span></p>
+        <button id="connect-btn">Connect</button>
+    </div>
+</div>
+
+<script>
+    // Basic RTC functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const connectBtn = document.getElementById('connect-btn');
+        const statusElement = document.getElementById('connection-status');
+        
+        connectBtn.addEventListener('click', function() {
+            statusElement.textContent = 'Connecting...';
+            
+            // Simulate connection
+            setTimeout(function() {
+                statusElement.textContent = 'Connected';
+                connectBtn.textContent = 'Disconnect';
+                connectBtn.onclick = function() {
+                    statusElement.textContent = 'Disconnected';
+                    connectBtn.textContent = 'Connect';
+                    connectBtn.onclick = function() {
+                        statusElement.textContent = 'Connecting...';
+                        // Simulate connection again
+                        setTimeout(function() {
+                            statusElement.textContent = 'Connected';
+                            connectBtn.textContent = 'Disconnect';
+                            connectBtn.onclick = arguments.callee;
+                        }, 1000);
+                    };
+                };
+            }, 1000);
+        });
+    });
+</script>
+{% endblock %}

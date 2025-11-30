@@ -3,18 +3,20 @@ Admin Module - Control Room
 Provides admin interface and system controls
 """
 from fastapi import APIRouter
+from .routes import dashboard
 
 
-# Export the router for component integration
+# Create router and include sub-routes
 router = APIRouter(prefix="/admin")
+router.include_router(dashboard.router)
 
 
 def get_module_info():
     """
     Provide module metadata used by the component registry.
-    
+
     The returned dictionary describes the module's identifier, the route patterns it exposes, and the local filesystem path for module-specific data.
-    
+
     Returns:
         dict: {
             "name": module name (str),

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Forums - Community Discussion{% endblock %}
+
+{% block content %}
+<div class="forums-container">
+    <h1>Community Forums</h1>
+    <p>Join the discussion on various topics.</p>
+    
+    <div class="forums-list">
+        <h2>Available Categories</h2>
+        <ul>
+            <li><a href="/forums/general">General Discussion</a></li>
+            <li><a href="/forums/tech">Technology</a></li>
+            <li><a href="/forums/offtopic">Off Topic</a></li>
+        </ul>
+    </div>
+    
+    <div class="create-thread">
+        <a href="/forums/new" class="btn">Create New Thread</a>
+    </div>
+</div>
+{% endblock %}

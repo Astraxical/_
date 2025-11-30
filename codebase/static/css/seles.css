@@ -1,14 +1,22 @@
-/* Seles-specific CSS */
+/* Seles-specific styles */
 body {
-    background-color: #e6f0ff;
-    color: #003366;
+    background-color: #e8f4fd;
+    color: #1a365d;
 }
 
-.header {
-    background-color: #3366cc;
-    color: white;
+nav {
+    background: linear-gradient(to right, #4a90e2, #5fa0e8);
 }
 
-.alter-specific {  
-    border-left: 4px solid #3366cc;
+.alter-btn.active {
+    background-color: #4a90e2;
+}
+
+.modules-list a {
+    background-color: #bee3f8;
+    color: #1a365d;
+}
+
+.modules-list a:hover {
+    background-color: #90cdf4;
 }

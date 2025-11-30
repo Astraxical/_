@@ -1,14 +1,22 @@
-/* Yuki-specific CSS */
+/* Yuki-specific styles */
 body {
-    background-color: #ffe6f0;
-    color: #660033;
+    background-color: #e6fffa;
+    color: #234e52;
 }
 
-.header {
-    background-color: #cc3366;
-    color: white;
+nav {
+    background: linear-gradient(to right, #2b6cb0, #3182ce);
 }
 
-.alter-specific {
-    border-left: 4px solid #cc3366;
+.alter-btn.active {
+    background-color: #3182ce;
+}
+
+.modules-list a {
+    background-color: #c6f6d5;
+    color: #234e52;
+}
+
+.modules-list a:hover {
+    background-color: #9ae6b4;
 }

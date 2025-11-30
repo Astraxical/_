@@ -1,14 +1,22 @@
-/* Dexen-specific CSS */
+/* Dexen-specific styles */
 body {
-    background-color: #fff2e6;
-    color: #663300;
+    background-color: #fefcbf;
+    color: #553c9a;
 }
 
-.header {
-    background-color: #cc6633;
-    color: white;
+nav {
+    background: linear-gradient(to right, #9f7aea, #805ad5);
 }
 
-.alter-specific {
-    border-left: 4px solid #cc6633;
+.alter-btn.active {
+    background-color: #805ad5;
+}
+
+.modules-list a {
+    background-color: #f3ddff;
+    color: #553c9a;
+}
+
+.modules-list a:hover {
+    background-color: #e0c3fc;
 }
