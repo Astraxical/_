@@ -1,40 +1,14 @@
-/*
- * Yuki-specific CSS
- */
-
-:root {
-    --primary-color: #45b7d1;
-    --secondary-color: #6baed6;
-    --accent-color: #f0b193;
-    --text-color: #3a3a3a;
-    --background-start: #f0f7ff;
-    --background-end: #a3cfff;
-}
-
+/* Yuki-specific CSS */
 body {
-    background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
-    color: var(--text-color);
+    background-color: #ffe6f0;
+    color: #660033;
 }
 
-.alter-indicator::before {
-    content: "❄️ ";
+.header {
+    background-color: #cc3366;
+    color: white;
 }
 
-.nav-links a:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-}
-
-.modules-overview li {
-    background: rgba(255, 255, 255, 0.85);
-    border-left: 4px solid var(--primary-color);
-}
-
-.alter-item {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+.alter-specific {
+    border-left: 4px solid #cc3366;
 }

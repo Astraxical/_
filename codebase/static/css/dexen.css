@@ -1,40 +1,14 @@
-/*
- * Dexen-specific CSS
- */
-
-:root {
-    --primary-color: #4ecdc4;
-    --secondary-color: #55a1a8;
-    --accent-color: #1a936f;
-    --text-color: #2d402e;
-    --background-start: #c7fcf9;
-    --background-end: #73d2de;
-}
-
+/* Dexen-specific CSS */
 body {
-    background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
-    color: var(--text-color);
+    background-color: #fff2e6;
+    color: #663300;
 }
 
-.alter-indicator::before {
-    content: "🤖 ";
+.header {
+    background-color: #cc6633;
+    color: white;
 }
 
-.nav-links a:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-}
-
-.modules-overview li {
-    background: rgba(255, 255, 255, 0.85);
-    border-left: 4px solid var(--primary-color);
-}
-
-.alter-item {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+.alter-specific {
+    border-left: 4px solid #cc6633;
 }

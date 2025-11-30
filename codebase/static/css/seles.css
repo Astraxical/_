@@ -1,40 +1,14 @@
-/*
- * Seles-specific CSS
- */
-
-:root {
-    --primary-color: #ff6b6b;
-    --secondary-color: #ff8e8e;
-    --accent-color: #ffd166;
-    --text-color: #333;
-    --background-start: #ffd166;
-    --background-end: #ff9a8b;
-}
-
+/* Seles-specific CSS */
 body {
-    background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
-    color: var(--text-color);
+    background-color: #e6f0ff;
+    color: #003366;
 }
 
-.alter-indicator::before {
-    content: "🎭 ";
+.header {
+    background-color: #3366cc;
+    color: white;
 }
 
-.nav-links a:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-}
-
-.modules-overview li {
-    background: rgba(255, 255, 255, 0.85);
-    border-left: 4px solid var(--primary-color);
-}
-
-.alter-item {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+.alter-specific {  
+    border-left: 4px solid #3366cc;
 }
