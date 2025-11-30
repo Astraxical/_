@@ -3,12 +3,12 @@ Admin Module - Control Room
 Provides admin interface and system controls
 """
 from fastapi import APIRouter
-from .routes import dashboard
+from .routes import router as admin_router
 
 
-# Create router and include sub-routes
+# Export the router for component integration
 router = APIRouter(prefix="/admin")
-router.include_router(dashboard.router)
+router.include_router(admin_router)
 
 
 def get_module_info():

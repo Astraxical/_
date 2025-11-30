@@ -2,12 +2,12 @@
 Forums Module - Community Discussion Platform
 """
 from fastapi import APIRouter
-from .routes import index
+from .routes import router as forums_router
 
 
 # Export the router and services for component integration
 router = APIRouter(prefix="/forums")
-router.include_router(index.router)
+router.include_router(forums_router)
 
 
 def get_module_info():

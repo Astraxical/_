@@ -2,12 +2,12 @@
 RTC Module - Real-Time Communication
 """
 from fastapi import APIRouter
-from .routes import chat
+from .routes import router as rtc_router
 
 
 # Export the router for component integration
 router = APIRouter(prefix="/rtc")
-router.include_router(chat.router)
+router.include_router(rtc_router)
 
 
 def get_module_info():
@@ -20,3 +20,8 @@ def get_module_info():
             - routes (list[str]): Route patterns exposed by the module (e.g., "/rtc/*").
             - local_data_path (str): Relative path to the module's local data directory ("modules/rtc/data").
     """
+    return {
+        "name": "rtc",
+        "routes": ["/rtc/*"],
+        "local_data_path": "modules/rtc/data"
+    }
