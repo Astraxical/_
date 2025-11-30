@@ -46,12 +46,14 @@ git branch --set-upstream-to=origin/dev ai-1
 ```
 
 ### Pull Script for Dev Branch
-A helper script is available to pull changes specifically from the dev branch:
+A helper script is available to synchronize your current branch with the dev branch:
 ```
 ./pull.sh
 ```
 
-This script ensures you're on the dev branch before pulling and provides appropriate error messages if run from the wrong location.
+This script detects which branch you're on and performs the appropriate actions:
+- If on the dev branch: pulls from origin/dev
+- If on any other branch (like ai-1, ai-2, ai-3): merges from origin/dev and pushes to the current branch
 
 ### Checking Current Worktree
 Before starting work, always verify which worktree and branch you're in:
