@@ -4,7 +4,7 @@ from slowapi.errors import RateLimitExceeded
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from components import setup_components
-from modules.template.engine import TemplateEngine
+from modules.alter.engine import TemplateEngine
 import config
 
 # Initialize rate limiter
@@ -24,7 +24,7 @@ setup_components(app)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Initialize the template engine
+# Initialize the alter engine
 template_engine = TemplateEngine()
 
 
@@ -34,11 +34,11 @@ def read_root(request: Request):
     """
     Render the application's homepage with alter-specific template rendering.
 
-    Uses the template engine to render the index template with appropriate
+    Uses the alter engine to render the index template with appropriate
     alter-specific overrides based on which alter is currently fronting.
 
     Parameters:
-        request (Request): The incoming HTTP request used by the template.
+        request (Request): The incoming HTTP request used by the alter system.
 
     Returns:
         TemplateResponse: The response rendering "index.html" with the homepage context.

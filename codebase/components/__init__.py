@@ -33,7 +33,7 @@ def setup_components(app: FastAPI):
     """
     Register and initialize application components on the provided FastAPI app.
 
-    This sets up the admin, forums, RTC, and template components, collects each component's metadata, and validates their routes to detect conflicts before runtime.
+    This sets up the admin, forums, RTC, and alter components, collects each component's metadata, and validates their routes to detect conflicts before runtime.
 
     Parameters:
         app (FastAPI): The FastAPI application instance to register components and routes on.
@@ -45,14 +45,14 @@ def setup_components(app: FastAPI):
     from components.admin_comp import setup_admin
     from components.forums_comp import setup_forums
     from components.rtc_comp import setup_rtc
-    from components.template_comp import setup_template
+    from components.alter_comp import setup_alter
 
     # Setup each component
     components_info = []
 
-    # Template component first (since it powers the alter system)
-    template_info = setup_template(app)
-    components_info.append(template_info)
+    # Alter component first (since it powers the alter system)
+    alter_info = setup_alter(app)
+    components_info.append(alter_info)
 
     # Admin component
     admin_info = setup_admin(app)
