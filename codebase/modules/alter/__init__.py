@@ -10,7 +10,7 @@ from .routes import alter
 router = APIRouter(prefix="/alter")
 
 # Include routes
-router.include_router(alter.router, prefix="/alter", tags=["alter"])
+router.include_router(alter.router, tags=["alter"])
 
 
 def get_module_info():
