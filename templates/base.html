@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Multi-House App{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    {% if current_alter and current_alter != 'global' %}
+    <link rel="stylesheet" href="/static/css/{{ current_alter }}.css">
+    {% endif %}
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Multi-House Application</h1>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/forums">Forums</a></li>
+                <li><a href="/rtc">RTC</a></li>
+                {% if current_alter %}
+                <li>Current Alter: {{ current_alter.title() }}</li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Multi-House App. Current alter: {{ current_alter or 'global' }}.</p>
+    </footer>
+
+    <script src="/static/js/htmx.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

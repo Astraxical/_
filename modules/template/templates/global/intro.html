@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ current_alter|title }} - Introduction{% endblock %}
+
+{% block content %}
+<div class="intro-content">
+    <h1>Introduction - {{ current_alter|title }}</h1>
+    <p>Welcome to the {{ current_alter|title }} interface.</p>
+    
+    {% if current_alter == 'seles' %}
+    <p>Seles is focused on structured discussions and organized community engagement.</p>
+    {% elif current_alter == 'dexen' %}
+    <p>Dexen prefers quick interactions and real-time communication.</p>
+    {% elif current_alter == 'yuki' %}
+    <p>Yuki values aesthetic experiences and thoughtful interactions.</p>
+    {% else %}
+    <p>This is the default global interface.</p>
+    {% endif %}
+</div>
+{% endblock %}
