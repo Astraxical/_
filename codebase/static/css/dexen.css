@@ -1,14 +1,14 @@
 /*
- * Seles-specific CSS
+ * Dexen-specific CSS
  */
 
 :root {
-    --primary-color: #ff6b6b;
-    --secondary-color: #ff8e8e;
-    --accent-color: #ffd166;
-    --text-color: #333;
-    --background-start: #ffd166;
-    --background-end: #ff9a8b;
+    --primary-color: #4ecdc4;
+    --secondary-color: #55a1a8;
+    --accent-color: #1a936f;
+    --text-color: #2d402e;
+    --background-start: #c7fcf9;
+    --background-end: #73d2de;
 }
 
 body {
@@ -17,7 +17,7 @@ body {
 }
 
 .alter-indicator::before {
-    content: "🎭 ";
+    content: "🤖 ";
 }
 
 .nav-links a:hover {
