@@ -1,28 +1,22 @@
-/*
- * Seles-specific CSS
- */
- 
+/* Seles-specific styles */
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #f0f0f0;
+    background-color: #e8f4fd;
+    color: #1a365d;
 }
 
-header {
-    background: rgba(0, 0, 0, 0.7);
+nav {
+    background: linear-gradient(to right, #4a90e2, #5fa0e8);
 }
 
-nav a {
-    color: #a0d2eb;
+.alter-btn.active {
+    background-color: #4a90e2;
 }
 
-nav a:hover {
-    color: #764ba2;
+.modules-list a {
+    background-color: #bee3f8;
+    color: #1a365d;
 }
 
-.alter-item {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #a0d2eb;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 5px 0;
+.modules-list a:hover {
+    background-color: #90cdf4;
 }

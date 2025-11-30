@@ -6,6 +6,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 import config
+import os
+from pathlib import Path
+
+# Ensure the data directory exists before creating the database
+db_path = Path(config.DATABASE_URL.replace("sqlite:///", ""))
+db_path.parent.mkdir(parents=True, exist_ok=True)
 
 # Database setup
 engine = create_engine(config.DATABASE_URL)

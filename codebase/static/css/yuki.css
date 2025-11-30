@@ -1,0 +1,22 @@
+/* Yuki-specific styles */
+body {
+    background-color: #e6fffa;
+    color: #234e52;
+}
+
+nav {
+    background: linear-gradient(to right, #2b6cb0, #3182ce);
+}
+
+.alter-btn.active {
+    background-color: #3182ce;
+}
+
+.modules-list a {
+    background-color: #c6f6d5;
+    color: #234e52;
+}
+
+.modules-list a:hover {
+    background-color: #9ae6b4;
+}

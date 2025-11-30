@@ -2,16 +2,18 @@
 Forums Module - Community Discussion Platform
 """
 from fastapi import APIRouter
+from .routes import router as forums_router
 
 
 # Export the router and services for component integration
 router = APIRouter(prefix="/forums")
+router.include_router(forums_router)
 
 
 def get_module_info():
     """
     Provide module metadata used by the application registry.
-    
+
     Returns:
         info (dict): A dictionary with module metadata:
             - name (str): Module identifier ("forums").

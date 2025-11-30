@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome to the admin control panel.</p>
+    
+    <div class="admin-controls">
+        <h2>System Controls</h2>
+        <ul>
+            <li><a href="/admin/modules">Module Management</a></li>
+            <li><a href="/admin/logs">System Logs</a></li>
+            <li><a href="/admin/users">User Management</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
