@@ -1,0 +1,14 @@
+/* Dexen-specific CSS */
+body {
+    background-color: #fff2e6;
+    color: #663300;
+}
+
+.header {
+    background-color: #cc6633;
+    color: white;
+}
+
+.alter-specific {
+    border-left: 4px solid #cc6633;
+}

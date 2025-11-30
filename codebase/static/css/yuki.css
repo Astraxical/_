@@ -1,0 +1,14 @@
+/* Yuki-specific CSS */
+body {
+    background-color: #ffe6f0;
+    color: #660033;
+}
+
+.header {
+    background-color: #cc3366;
+    color: white;
+}
+
+.alter-specific {
+    border-left: 4px solid #cc3366;
+}
