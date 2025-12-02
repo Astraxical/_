@@ -1,0 +1,14 @@
+<form method="POST" action="/forums/posts" class="reply-form">
+    <input type="hidden" name="thread_id" value="{{ thread_id }}">
+    <input type="hidden" name="parent_post_id" value="{{ parent_post_id }}">
+    <div class="form-group">
+        <label for="author">Your Name:</label>
+        <input type="text" id="author" name="author" required>
+    </div>
+    <div class="form-group">
+        <label for="content">Your Reply:</label>
+        <textarea id="content" name="content" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Post Reply</button>
+    <button type="button" class="btn btn-secondary cancel-reply">Cancel</button>
+</form>

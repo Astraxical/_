@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ thread.title }} - Forums{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="thread-container">
+    <div class="thread-header">
+        <h1>{{ thread.title }}</h1>
+        <p class="thread-meta">By {{ thread.author }} on {{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        {% include 'partials/thread_tags.html' %}
+    </div>
+
+    <div class="form-section">
+        <form method="GET" action="/forums/search" class="search-form">
+            <div class="form-group">
+                <input type="text" name="q" placeholder="Search in this thread..." class="search-input">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="thread-content">
+        <p>{{ thread.content }}</p>
+    </div>
+
+    <div class="posts-section">
+        <h2>Replies ({{ posts|length }})</h2>
+
+        {% if posts %}
+            {% for post in posts %}
+                {% include 'partials/post_item.html' %}
+            {% endfor %}
+        {% else %}
+            <p>No replies yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+
+    <div class="create-post-form">
+        <h3>Add a Reply</h3>
+        {% include 'partials/create_post_form.html' %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle reply button clicks
+    document.querySelectorAll('.reply-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const formContainer = document.getElementById('reply-form-' + postId);
+
+            // Hide all other reply forms
+            document.querySelectorAll('.reply-form-container').forEach(container => {
+                container.style.display = 'none';
+            });
+
+            // Show this reply form
+            formContainer.style.display = 'block';
+
+            // Update the parent_post_id in the form
+            const form = formContainer.querySelector('form');
+            const hiddenInput = form.querySelector('input[name="parent_post_id"]');
+            hiddenInput.value = postId;
+
+            // Scroll to the form
+            formContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Handle cancel reply button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('cancel-reply')) {
+            const formContainer = e.target.closest('.reply-form-container');
+            formContainer.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

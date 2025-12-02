@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Thread - Forums{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="create-thread-container">
+    <h1>Create New Thread</h1>
+
+    {% with categories=categories %}
+        {% include 'partials/create_thread_form.html' %}
+    {% endwith %}
+</div>
+{% endblock %}

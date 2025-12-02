@@ -1,0 +1,184 @@
+/* Common reusable components */
+.forum-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.content-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: white;
+}
+
+.card-header {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.card-subtitle {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Thread components */
+.thread-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.thread-header h1 {
+    margin-bottom: 5px;
+}
+
+.thread-meta {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Post components */
+.post {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.post-date {
+    color: #888;
+    font-size: 0.9em;
+}
+
+/* Form components */
+.form-section {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+/* Button components */
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+/* List components */
+.item-list {
+    list-style: none;
+    padding: 0;
+}
+
+.list-item {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.list-item a {
+    text-decoration: none;
+    color: #333;
+}
+
+.list-item a:hover {
+    color: #007bff;
+}
+
+/* Search components */
+.search-form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+}
+
+.search-form .btn {
+    border-radius: 0 4px 4px 0;
+    margin-left: -1px;
+}
+
+.thread-snippet {
+    margin-top: 10px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Tag components */
+.tag {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}

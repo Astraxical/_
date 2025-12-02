@@ -1,0 +1,7 @@
+{% if thread.tags %}
+<div class="thread-tags">
+    {% for tag in thread.tags %}
+    <span class="tag">{{ tag.name }}</span>
+    {% endfor %}
+</div>
+{% endif %}

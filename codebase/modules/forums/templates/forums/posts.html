@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Forum Posts{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="posts-container">
+    <h1>All Forum Posts</h1>
+
+    {% if posts_with_threads %}
+        <div class="posts-list">
+            {% for item in posts_with_threads %}
+            <div class="post-item">
+                <h3><a href="/forums/threads/{{ item.post.thread_id }}">{{ item.thread.title if item.thread else "Unknown Thread" }}</a></h3>
+                <p class="post-meta">By {{ item.post.author }} on {{ item.post.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                <div class="post-content">
+                    <p>{{ item.post.content[:200] }}{% if item.post.content|length > 200 %}...{% endif %}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No posts found.</p>
+    {% endif %}
+</div>
+{% endblock %}

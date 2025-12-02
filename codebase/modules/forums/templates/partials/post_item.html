@@ -1,0 +1,28 @@
+<div class="content-card" id="post-{{ post.id }}">
+    <div class="card-header">
+        <strong>{{ post.author }}</strong>
+        <span class="post-date">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+    </div>
+    <div class="post-content">
+        <p>{{ post.content }}</p>
+    </div>
+    <div class="post-actions">
+        <button class="btn btn-secondary reply-btn" data-post-id="{{ post.id }}">Reply</button>
+    </div>
+
+    <!-- Replies container -->
+    <div class="replies-container" id="replies-{{ post.id }}">
+        {% if post.replies %}
+            <div class="replies-list">
+                {% for reply in post.replies %}
+                    {% include 'partials/post_item.html' %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Reply form (initially hidden) -->
+    <div class="reply-form-container" id="reply-form-{{ post.id }}" style="display: none;">
+        {% include 'partials/create_reply_form.html' %}
+    </div>
+</div>

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Post by {{ post.author }} - Forums{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="post-container">
+    <div class="post-header">
+        <h1>Post by {{ post.author }}</h1>
+        <p class="post-meta">Posted on {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p>Thread: <a href="/forums/threads/{{ post.thread_id }}">{{ thread.title if thread else "Unknown Thread" }}</a></p>
+    </div>
+
+    <div class="post-content">
+        <p>{{ post.content }}</p>
+    </div>
+
+    <div class="post-actions">
+        <a href="/forums/threads/{{ post.thread_id }}" class="btn">Back to Thread</a>
+    </div>
+</div>
+{% endblock %}

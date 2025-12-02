@@ -2,22 +2,62 @@
 
 {% block title %}Forums - Community Discussion{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<div class="forums-container">
-    <h1>Community Forums</h1>
-    <p>Join the discussion on various topics.</p>
-    
-    <div class="forums-list">
-        <h2>Available Categories</h2>
-        <ul>
-            <li><a href="/forums/general">General Discussion</a></li>
-            <li><a href="/forums/tech">Technology</a></li>
-            <li><a href="/forums/offtopic">Off Topic</a></li>
-        </ul>
+<div class="forum-container">
+    <div class="forums-header">
+        <h1>Community Forums</h1>
+        <p>Join the discussion on various topics.</p>
     </div>
-    
-    <div class="create-thread">
-        <a href="/forums/new" class="btn">Create New Thread</a>
+
+    <div class="form-section">
+        <a href="/forums/new" class="btn btn-primary">Create New Thread</a>
+    </div>
+
+    <div class="form-section">
+        <form method="GET" action="/forums/search" class="search-form">
+            <div class="form-group">
+                <input type="text" name="q" placeholder="Search threads and posts..." class="search-input">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Categories section -->
+    <div class="categories-section">
+        <h2>Categories</h2>
+        {% if categories %}
+        <div class="categories-container">
+            {% for category in categories %}
+            <div class="list-item">
+                <a href="/forums/categories/{{ category.id }}">
+                    <h3 class="card-title">{{ category.name }}</h3>
+                    <div class="card-subtitle">{{ category.description }}</div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No categories available yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Latest threads section -->
+    <div class="forums-list">
+        <h2>Latest Discussions</h2>
+        {% if threads %}
+        <div class="threads-container">
+            {% for thread in threads %}
+                {% include 'partials/thread_item.html' %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No threads yet. Be the first to start a discussion!</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

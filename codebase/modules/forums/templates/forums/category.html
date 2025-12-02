@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} - Forums{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="/static/forums/css/forums.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="forum-container">
+    <div class="category-header">
+        <h1>{{ category.name }}</h1>
+        <p>{{ category.description }}</p>
+        {% if parent_category %}
+            <p><a href="/forums/categories/{{ parent_category.id }}">Back to {{ parent_category.name }}</a></p>
+        {% endif %}
+    </div>
+
+    <div class="form-section">
+        <form method="GET" action="/forums/search" class="search-form">
+            <div class="form-group">
+                <input type="text" name="q" placeholder="Search in this category..." class="search-input">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Subcategories -->
+    {% if categories %}
+        <div class="subcategories-section">
+            <h2>Subcategories</h2>
+            {% for subcategory in categories %}
+                <div class="list-item">
+                    <a href="/forums/categories/{{ subcategory.id }}">
+                        <h3 class="card-title">{{ subcategory.name }}</h3>
+                        <div class="card-subtitle">{{ subcategory.description }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Threads in category -->
+    <div class="threads-section">
+        <h2>Threads</h2>
+        {% if threads %}
+            <div class="threads-container">
+                {% for thread in threads %}
+                    {% include 'partials/thread_item.html' %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No threads in this category yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="form-section">
+        <a href="/forums/new?category_id={{ category.id }}" class="btn btn-primary">Create New Thread in this Category</a>
+    </div>
+</div>
+{% endblock %}

@@ -58,11 +58,25 @@ class AuditLog(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
     details = Column(Text)
 
+def get_db():
+    """
+    Database dependency that provides a database session for FastAPI endpoints.
+
+    Yields:
+        Database session to be used for queries
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
 # Create all tables
 def init_db():
     """
     Create all database tables defined on the ORM Base.
-    
+
     This ensures the database schema for all mapped models is created in the configured engine if the tables do not already exist.
     """
     Base.metadata.create_all(bind=engine)
